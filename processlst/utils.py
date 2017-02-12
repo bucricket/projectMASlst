@@ -6,6 +6,8 @@ This is a temporary script file.
 """
 
 import urllib2, base64
+import os
+from osgeo import gdal,osr
 
 class earthDataHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
     def http_error_302(self, req, fp, code, msg, headers):
@@ -57,6 +59,45 @@ def writeArray2Tiff(data,lats,lons,outfile):
     
     ds = None
 
+def folders(base):
+    inputDataBase = os.path.join(os.sep,'data','data123','chain','GETD_FINAL')
+    dataBase = os.path.join(base,'data')
+    landsatDataBase = os.path.join(dataBase,'Landsat-8')
+    metBase = os.path.join(dataBase,'MET')
+    if not os.path.exists(metBase):
+        os.makedirs(metBase) 
+    ALEXIbase = os.path.join(dataBase,'ALEXI')
+    if not os.path.exists(ALEXIbase):
+        os.makedirs(ALEXIbase) 
+    resultsBase = os.path.join(base,'outputs')
+    albedoBase = os.path.join(landsatDataBase,'albedo')
+    if not os.path.exists(albedoBase):
+        os.makedirs(albedoBase)   
+    ndviBase = os.path.join(landsatDataBase,'ndvi')
+    if not os.path.exists(ndviBase):
+        os.makedirs(ndviBase)
+    landsatSR = os.path.join(landsatDataBase,'SR')
+    if not os.path.exists(landsatSR):
+        os.makedirs(landsatSR)
+    if not os.path.exists(resultsBase):
+        os.makedirs(resultsBase)
+    landsatBT = os.path.join(landsatDataBase,'BT')
+    if not os.path.exists(landsatBT):
+        os.makedirs(landsatBT)
+    landsatLC = os.path.join(landsatDataBase,'LC')
+    if not os.path.exists(landsatLC):
+        os.makedirs(landsatLC)
+    landsatLAI = os.path.join(landsatDataBase,'LAI')
+    if not os.path.exists(landsatLAI):
+        os.makedirs(landsatLAI)
+    modisBase = os.path.join(base,'data','MODIS')
+    if not os.path.exists(modisBase):
+        os.mkdir(modisBase)
+    out = {'dataBase':dataBase,'metBase':metBase,'inputDataBase':inputDataBase,
+    'landsatBT':landsatBT,'ALEXIbase':ALEXIbase,'landsatDataBase':landsatDataBase,
+    'resultsBase':resultsBase,'landsatLC':landsatLC,'albedoBase':albedoBase,
+    'ndviBase':ndviBase,'landsatSR':landsatSR,'modisBase':modisBase,'landsatLAI':landsatLAI}
+    return out
 
 username = "mschull"
 password = "sushmaMITCH12"

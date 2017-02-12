@@ -13,6 +13,7 @@ import subprocess
 from osgeo import gdal
 import h5py
 import shutil
+import glob
 from .landsatTools import landsat_metadata,GeoTIFF
 from .utils import folders,writeArray2Tiff,writeImageData,getHTTPdata
 
@@ -227,6 +228,7 @@ class Landsat:
         self.inputDataBase = Folders['inputDataBase']
         self.landsatLC = Folders['landsatLC']
         self.landsatSR = Folders['landsatSR']
+        self.landsatBT = Folders['landsatBT']
         self.metBase = Folders['metBase']
         self.sceneID = filepath.split(os.sep)[-1][:21]
         self.scene = self.sceneID[3:9]
@@ -251,16 +253,16 @@ class Landsat:
         self.solAzi = meta.SUN_AZIMUTH
         self.landsatDate = meta.DATE_ACQUIRED
         self.landsatTime = meta.SCENE_CENTER_TIME[:-2]
+        self.Kappa1 = meta.K1_CONSTANT_BAND_10
+        self.Kappa2 = meta.K2_CONSTANT_BAND_10
         d = datetime.strptime('%s%s' % (self.landsatDate,self.landsatTime),'%Y-%m-%d%H:%M:%S.%f')
         self.year = d.year
         self.month = d.month
         self.day = d.day
         self.hr = d.hour #UTC    
     
-    def processASTERemis(self):  
-
-    
-        ASTERurlBase = 'http://e4ftl01.cr.usgs.gov/ASTT/AG100.003/2000.01.01'
+    def processASTERemis(self):     
+        ASTERurlBase = 'https://e4ftl01.cr.usgs.gov/ASTT/AG100.003/2000.01.01'
         # use Landsat scene area
         UL = [int(np.ceil(self.ulLat)),int(np.floor(self.ulLon))]
         
@@ -327,23 +329,14 @@ class Landsat:
         origShap = merraDict['origShape']
         surfgeom=merraDict['SurfGeom']
         nlevels = merraDict['P'].shape[1]
-        MERRA2_ulLat = 90.0
-        MERRA2_ulLon = -180.0
-        MERRA2LatRes = 0.5
-        MERRA2LonRes = 0.625
+
         #reshape and resize image to fit landsat
         lats = np.flipud(np.resize(surfgeom[:,0],origShap))
         lons = np.flipud(np.resize(surfgeom[:,1],origShap))
-        inRes = [MERRA2LonRes,MERRA2LatRes]
-        inUL = [MERRA2_ulLat,MERRA2_ulLon]
+
         channel=1
-        rawLandsatFolder =os.path.join(landsatDN, landsatscene)
-        mtlFile = os.path.join(landsatDN,landsatscene,'%s_MTL.txt' % landsatscene)
-        meta = landsatTools.landsat_metadata(mtlFile)
-        dn2Radslope = meta.RADIANCE_MULT_BAND_10
-        dn2Radintcpt = meta.RADIANCE_ADD_BAND_10
-        #chipName = pdap.landsatscene[3:9]
-        #landsat = glob.glob(os.path.join(pdap.landsatProcessed,chipName,'*%s*RAD.tif' % chipName))[0]
+        rawLandsatFolder =os.path.join(self.landsatBT, self.scene)
+
         landsat = glob.glob(os.path.join(rawLandsatFolder,'*B10.TIF'))[0]
         #convert from 30 to 90 m
         resampName = os.path.join('%sResample.vrt' % landsat[:-4])
@@ -351,10 +344,8 @@ class Landsat:
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
    
-        L8therm = Lg.ReadAsArray()
-        ThermalRad = L8therm*dn2Radslope+dn2Radintcpt
+        ThermalRad= Lg.ReadAsArray()
         print "L8 Size: %f,%f" % (ThermalRad.shape[0],ThermalRad.shape[1])
-        inProj4 = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
         Lg = None
         
     
@@ -365,9 +356,8 @@ class Landsat:
         tempName = os.path.join(landsatDataBase,'RadDown.tiff')
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
         writeArray2Tiff(RadDown,lats[:,0],lons[0,:],tempName)
-        #outFormat = gdal.GDT_Float32
-        #dA.writeArray2Tiff(RadDown,inRes,inUL,inProj4,tempName,outFormat)
-        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (inProj4,self.Proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
+
+        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.Proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
         RadDown = Lg.ReadAsArray()
@@ -379,10 +369,9 @@ class Landsat:
         RadUp = np.flipud(np.resize(tirsRttov.Rad2Up[:,channel,nlevels-2],origShap))
         tempName = os.path.join(landsatDataBase,'RadUp.tiff')
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
-        #outFormat = gdal.GDT_Float32
-        #dA.writeArray2Tiff(RadUp,inRes,inUL,inProj4,tempName,outFormat)
+
         writeArray2Tiff(RadUp,lats[:,0],lons[0,:],tempName)
-        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (inProj4,self.Proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
+        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.Proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
         RadUp = Lg.ReadAsArray()
@@ -394,9 +383,8 @@ class Landsat:
         tempName = os.path.join(landsatDataBase,'trans.tiff')
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
         writeArray2Tiff(trans,lats[:,0],lons[0,:],tempName)
-        #outFormat = gdal.GDT_Float32
-        #dA.writeArray2Tiff(trans,inRes,inUL,inProj4,tempName,outFormat)
-        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (inProj4,self.Proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
+
+        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.Proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
         trans = Lg.ReadAsArray()
@@ -417,9 +405,8 @@ class Landsat:
         emis[emis<0.000001] = np.nan
         surfRad =(((ThermalRad-RadUp)/trans)-(1-emis)*RadDown)/emis
         #get Kappa constants from Landsat
-        Kappa1 = meta.K1_CONSTANT_BAND_10
-        Kappa2 = meta.K2_CONSTANT_BAND_10
-        LST = Kappa2*(1/np.log(Kappa1/surfRad))
+
+        LST = self.Kappa2*(1/np.log(self.Kappa1/surfRad))
         lstName = os.path.join(lstBase,'%s_lst.tiff'% landsatscene)
         #write LST to a geoTiff
         writeImageData(LST,geo,proj,LST.shape,'GTiff',lstName,gdal.GDT_Float32)
