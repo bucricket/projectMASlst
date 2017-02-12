@@ -15,38 +15,23 @@ import h5py
 import shutil
 import glob
 from .landsatTools import landsat_metadata,GeoTIFF
-from .utils import folders,writeArray2Tiff,writeImageData,getHTTPdata
+from .utils import folders,writeArray2Tiff,getHTTPdata
+
 
 
 class RTTOV:
     def __init__(self, filepath,session):
-        base = os.path.abspath(os.path.join(filepath,os.pardir,os.pardir,os.pardir,
-                                            os.pardir,os.pardir))
-        print base
-        Folders = folders(base)    
+
         self.session = session
-        self.inputDataBase = Folders['inputDataBase']
-        self.landsatLC = Folders['landsatLC']
-        self.landsatSR = Folders['landsatSR']
-        self.metBase = Folders['metBase']
         self.sceneID = filepath.split(os.sep)[-1][:21]
         self.scene = self.sceneID[3:9]
-        self.yeardoy = self.sceneID[9:16]
-        
+        self.yeardoy = self.sceneID[9:16]        
         meta = landsat_metadata(os.path.join(self.landsatSR, 
                                                           self.scene,'%s_MTL.txt' % self.sceneID))
-        ls = GeoTIFF(os.path.join(self.landsatSR, self.scene,'%s_sr_band1.tif' % self.sceneID))
-        self.proj4 = ls.proj4
-        self.ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT
-        self.uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT
-        self.lrx = meta.CORNER_LR_PROJECTION_X_PRODUCT
-        self.lry = meta.CORNER_LR_PROJECTION_Y_PRODUCT
         self.ulLat = meta.CORNER_UL_LAT_PRODUCT
         self.ulLon = meta.CORNER_UL_LON_PRODUCT
         self.lrLat = meta.CORNER_LR_LAT_PRODUCT
         self.lrLon = meta.CORNER_LR_LON_PRODUCT
-        self.delx = meta.GRID_CELL_SIZE_REFLECTIVE
-        self.dely = meta.GRID_CELL_SIZE_REFLECTIVE
         self.solZen = meta.SUN_ELEVATION
         self.solAzi = meta.SUN_AZIMUTH
         self.landsatDate = meta.DATE_ACQUIRED
@@ -57,8 +42,7 @@ class RTTOV:
         self.day = d.day
         self.hr = d.hour #UTC
 
-    def preparePROFILEdata(self,landsatSceneID):
-        print "using landsat scene: %s" % landsatSceneID
+    def preparePROFILEdata(self):
 
         ul = [self.ulLon-1.5,self.ulLat+1.5]
         lr = [self.lrLon+1.5,self.lrLat-1.5]
@@ -225,19 +209,21 @@ class Landsat:
         print base
         Folders = folders(base)    
         self.session = session
-        self.inputDataBase = Folders['inputDataBase']
-        self.landsatLC = Folders['landsatLC']
+        self.landsatLC = Folders['landsatLST']
         self.landsatSR = Folders['landsatSR']
         self.landsatBT = Folders['landsatBT']
-        self.metBase = Folders['metBase']
+        self.asterEmissivityBase= Folders['asterEmissivityBase']
+        self.ASTERmosaicTemp = Folders['ASTERmosaicTemp']
+        self.landsatDataBase = Folders['landsatDataBase']
+        self.landsatEmissivityBase = Folders['landsatEmissivityBase']
         self.sceneID = filepath.split(os.sep)[-1][:21]
         self.scene = self.sceneID[3:9]
         self.yeardoy = self.sceneID[9:16]
         
         meta = landsat_metadata(os.path.join(self.landsatSR, 
                                                           self.scene,'%s_MTL.txt' % self.sceneID))
-        ls = GeoTIFF(os.path.join(self.landsatSR, self.scene,'%s_sr_band1.tif' % self.sceneID))
-        self.proj4 = ls.proj4
+        self.ls = GeoTIFF(os.path.join(self.landsatSR, self.scene,'%s_sr_band1.tif' % self.sceneID))
+        self.proj4 = self.ls.proj4
         self.inProj4 = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
         self.ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT
         self.uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT
@@ -277,7 +263,7 @@ class Landsat:
                 # ASTER Emissivity product AG100 comes in 1 x 1 degree tiles where UL is given in the filename.
                 ASTERurl = os.path.join(ASTERurlBase,asterFN)
                 print ASTERurl
-                localAsterFN = os.path.join(asterEmissivityBase,asterFN)
+                localAsterFN = os.path.join(self.asterEmissivityBase,asterFN)
                 if not os.path.isfile(localAsterFN):
     #                #first download HDF file
     #                req = Request(ASTERurl)
@@ -305,23 +291,23 @@ class Landsat:
                     EmisBand4 = np.array(fh5["/Emissivity/Mean/"])[3]/1000.
                     lats = np.array(fh5["/Geolocation/Latitude/"])
                     lons = np.array(fh5["/Geolocation/Longitude/"])
-                    tempName = os.path.join(ASTERmosaicTemp,'emis%d%s.tiff'% (UL[0]-i,ulLon))
+                    tempName = os.path.join(self.ASTERmosaicTemp,'emis%d%s.tiff'% (UL[0]-i,ulLon))
                     writeArray2Tiff(EmisBand4,lats[:,0],lons[0,:],tempName)
-                    outFormat = gdal.GDT_Float32
+
 
         
         
         #mosaic ,reproject and save as geotiff
-        mosaicTempFN = '%s/mosaic.vrt' % ASTERmosaicTemp
-        mosaicVRTcommand = 'gdalbuildvrt -srcnodata 0 %s %s/*.tiff' % (mosaicTempFN,ASTERmosaicTemp)
+        mosaicTempFN = '%s/mosaic.vrt' % self.ASTERmosaicTemp
+        mosaicVRTcommand = 'gdalbuildvrt -srcnodata 0 %s %s/*.tiff' % (mosaicTempFN,self.ASTERmosaicTemp)
         out = subprocess.check_output(mosaicVRTcommand, shell=True)
-        resampName = os.path.join(landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)
+        resampName = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)
         #command = "gdalwarp -overwrite -s_srs EPSG:%d -t_srs '%s' -r bilinear -tr 30 30 -te %f %f %f %f -te_srs EPSG:%d -of GTiff %s %s" % (4326,ls.proj4,ullon,lrlat,lrlon,ullat,4326, mosaicTempFN,resampName)
         command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %f %f %f %f -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly, mosaicTempFN,resampName)
         out = subprocess.check_output(command, shell=True)
         print 'done processing ASTER'
-        shutil.rmtree(ASTERmosaicTemp)
-        os.makedirs(ASTERmosaicTemp)
+        shutil.rmtree(self.ASTERmosaicTemp)
+        os.makedirs(self.ASTERmosaicTemp)
         return resampName
     
     def processLandsatLST(self,tirsRttov,landsatscene,merraDict):
@@ -353,7 +339,7 @@ class Landsat:
         
         #Process downwelling radiance
         RadDown = np.flipud(np.resize(tirsRttov.Rad2Down[:,channel,nlevels-2],origShap))
-        tempName = os.path.join(landsatDataBase,'RadDown.tiff')
+        tempName = os.path.join(self.landsatDataBase,'RadDown.tiff')
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
         writeArray2Tiff(RadDown,lats[:,0],lons[0,:],tempName)
 
@@ -367,7 +353,7 @@ class Landsat:
         
         #Process upwelling radiance
         RadUp = np.flipud(np.resize(tirsRttov.Rad2Up[:,channel,nlevels-2],origShap))
-        tempName = os.path.join(landsatDataBase,'RadUp.tiff')
+        tempName = os.path.join(self.landsatDataBase,'RadUp.tiff')
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
 
         writeArray2Tiff(RadUp,lats[:,0],lons[0,:],tempName)
@@ -380,7 +366,7 @@ class Landsat:
         
         #Process transmission
         trans = np.flipud(np.resize(tirsRttov.TauTotal[:,channel],origShap))
-        tempName = os.path.join(landsatDataBase,'trans.tiff')
+        tempName = os.path.join(self.landsatDataBase,'trans.tiff')
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
         writeArray2Tiff(trans,lats[:,0],lons[0,:],tempName)
 
@@ -392,10 +378,10 @@ class Landsat:
           
         #get emissivity from ASTER
         path_row = landsatscene
-        if not os.path.exists(os.path.join(landsatEmissivityBase,'%s_EMIS.tiff' % path_row)):    
-            ASTERemisFN = processASTERemis(rawLandsatFolder,landsat)
+        if not os.path.exists(os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % path_row)):    
+            ASTERemisFN = self.processASTERemis()
         else:
-            ASTERemisFN = os.path.join(landsatEmissivityBase,'%s_EMIS.tiff' % path_row)
+            ASTERemisFN = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % path_row)
         aster = gdal.Open(ASTERemisFN)
         emis = aster.ReadAsArray()
         print "emis Size: %f,%f" % (emis.shape[0],emis.shape[1])
@@ -407,8 +393,10 @@ class Landsat:
         #get Kappa constants from Landsat
 
         LST = self.Kappa2*(1/np.log(self.Kappa1/surfRad))
-        lstName = os.path.join(lstBase,'%s_lst.tiff'% landsatscene)
+        lstFolder = os.path.join(self.landsatLST,self.scene)
+        lstName = os.path.join(lstFolder,'%s_lst.tiff'% landsatscene)
         #write LST to a geoTiff
-        writeImageData(LST,geo,proj,LST.shape,'GTiff',lstName,gdal.GDT_Float32)
+        self.ls.clone(lstName ,LST)
+        #writeImageData(LST,geo,proj,LST.shape,'GTiff',lstName,gdal.GDT_Float32)
         
         print 'done processing LST'

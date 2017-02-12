@@ -8,6 +8,7 @@ This is a temporary script file.
 import urllib2, base64
 import os
 from osgeo import gdal,osr
+import tarfile
 
 class earthDataHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
     def http_error_302(self, req, fp, code, msg, headers):
@@ -60,48 +61,36 @@ def writeArray2Tiff(data,lats,lons,outfile):
     ds = None
 
 def folders(base):
-    inputDataBase = os.path.join(os.sep,'data','data123','chain','GETD_FINAL')
     dataBase = os.path.join(base,'data')
     landsatDataBase = os.path.join(dataBase,'Landsat-8')
-    metBase = os.path.join(dataBase,'MET')
-    if not os.path.exists(metBase):
-        os.makedirs(metBase) 
-    ALEXIbase = os.path.join(dataBase,'ALEXI')
-    if not os.path.exists(ALEXIbase):
-        os.makedirs(ALEXIbase) 
-    resultsBase = os.path.join(base,'outputs')
-    albedoBase = os.path.join(landsatDataBase,'albedo')
-    if not os.path.exists(albedoBase):
-        os.makedirs(albedoBase)   
-    ndviBase = os.path.join(landsatDataBase,'ndvi')
-    if not os.path.exists(ndviBase):
-        os.makedirs(ndviBase)
+    asterDataBase = os.path.join(dataBase,'ASTER')
     landsatSR = os.path.join(landsatDataBase,'SR')
     if not os.path.exists(landsatSR):
         os.makedirs(landsatSR)
-    if not os.path.exists(resultsBase):
-        os.makedirs(resultsBase)
     landsatBT = os.path.join(landsatDataBase,'BT')
     if not os.path.exists(landsatBT):
         os.makedirs(landsatBT)
-    landsatLC = os.path.join(landsatDataBase,'LC')
-    if not os.path.exists(landsatLC):
-        os.makedirs(landsatLC)
-    landsatLAI = os.path.join(landsatDataBase,'LAI')
-    if not os.path.exists(landsatLAI):
-        os.makedirs(landsatLAI)
-    modisBase = os.path.join(base,'data','MODIS')
-    if not os.path.exists(modisBase):
-        os.mkdir(modisBase)
-    out = {'dataBase':dataBase,'metBase':metBase,'inputDataBase':inputDataBase,
-    'landsatBT':landsatBT,'ALEXIbase':ALEXIbase,'landsatDataBase':landsatDataBase,
-    'resultsBase':resultsBase,'landsatLC':landsatLC,'albedoBase':albedoBase,
-    'ndviBase':ndviBase,'landsatSR':landsatSR,'modisBase':modisBase,'landsatLAI':landsatLAI}
+    landsatLST = os.path.join(landsatDataBase,'LST')
+    if not os.path.exists(landsatLST):
+        os.makedirs(landsatLST)
+    asterEmissivityBase = os.path.join(asterDataBase,'asterEmissivity')
+    if not os.path.exists(asterEmissivityBase):
+        os.makedirs(asterEmissivityBase)
+    landsatEmissivityBase = os.path.join(asterDataBase,'landsatEmissivity')
+    if not os.path.exists(landsatEmissivityBase):
+        os.makedirs(landsatEmissivityBase)
+    ASTERmosaicTemp = os.path.join(asterDataBase,'mosaicTemp')    
+    if not os.path.exists(ASTERmosaicTemp):
+        os.makedirs(ASTERmosaicTemp)
+    out = {'landsatLST':landsatLST,'landsatSR':landsatSR,'landsatBT':landsatBT,
+    'asterEmissivityBase':asterEmissivityBase,'ASTERmosaicTemp':ASTERmosaicTemp,
+    'landsatDataBase':landsatDataBase, 'landsatEmissivityBase':landsatEmissivityBase}
     return out
 
-username = "mschull"
-password = "sushmaMITCH12"
-url = "https://e4ftl01.cr.usgs.gov/ASTT/AG100.003/2000.01.01/AG100.v003.-01.-037.0001.h5"    
-auth = (username,password)
-outFN = '/Users/mschull/umdGD/test3.h5'
-getHTTPdata(url,outFN,auth)
+        
+def untar(fname, fpath):
+
+    tar = tarfile.open(fname)
+    tar.extractall(path = fpath)
+    tar.close()
+    os.remove(fname)
