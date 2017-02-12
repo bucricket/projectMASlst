@@ -3,9 +3,6 @@
 from __future__ import print_function
 import subprocess
 import os
-import shutil
-from urllib import urlretrieve
-
 
 # set project base directory structure
 base = os.getcwd()
@@ -31,14 +28,13 @@ condaPath = out[0][:-1]
 
 
 setup(
-    name="projectmaspreprocess",
+    name="projectmaslst",
     version=__version__,
-    description="prepare data for input to pyDisALEXI",
+    description="prepare LST data for input to pyDisALEXI",
     author="Mitchell Schull",
     author_email="mitch.schull@noaa.gov",
-    url="https://github.com/bucricket/projectMASpreprocess.git",
-    packages= ['preparepydisalexi'],
-    package_data={'preparepydisalexi': ['data/*.json']},
+    url="https://github.com/bucricket/projectMASlst.git",
+    packages= ['processlst'],
     platforms='Posix; MacOS X; Windows',
     license='BSD 3-Clause',
     classifiers=[

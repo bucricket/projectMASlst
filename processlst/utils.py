@@ -94,3 +94,19 @@ def untar(fname, fpath):
     tar.extractall(path = fpath)
     tar.close()
     os.remove(fname)
+    
+# helper function
+def _test_outside(testx, lower, upper):
+    """
+    True if testx, or any element of it is outside [lower, upper].
+
+    Both lower bound and upper bound included
+    Input: Integer or floating point scalar or Numpy array.
+    """
+    test = np.array(testx)
+    return np.any(test < lower) or np.any(test > upper)
+
+# custom exception
+class RasterError(Exception):
+    """Custom exception for errors during raster processing in Pygaarst"""
+    pass
