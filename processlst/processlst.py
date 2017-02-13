@@ -14,6 +14,8 @@ import pyrttov
 import shutil
 import urllib
 import pycurl
+import keyring
+import getpass
 from .processData import Landsat,RTTOV
 from .utils import folders,untar
 
@@ -150,6 +152,14 @@ def runRTTOV(profileDict):
 
 def main():
     
+         # =====earthData credentials===============
+    earthLoginUser = str(getpass.getpass(prompt="earth login username:"))
+    if keyring.get_password("nasa",earthLoginUser)==None:
+        earthLoginPass = str(getpass.getpass(prompt="earth login password:"))
+        keyring.set_password("nasa",earthLoginUser,earthLoginPass)
+    else:
+        earthLoginPass = str(keyring.get_password("nasa",earthLoginUser)) 
+    auth = (earthLoginUser,earthLoginPass)
     base = os.getcwd()    
     Folders = folders(base)    
     landsatLST = Folders['landsatLST']
@@ -162,8 +172,8 @@ def main():
     # ------------------------------------------------------------------------
     for i in xrange(len(sceneIDlist)):
         inFN = sceneIDlist[i]
-        landsat = Landsat(inFN)
-        rttov = RTTOV(inFN)
+        landsat = Landsat(inFN,auth)
+        rttov = RTTOV(inFN,auth)
         lstFolder = os.path.join(landsatLST,landsat.scene)
         tifFile = os.path.join(lstFolder,'%s_lst.tiff'% landsat.sceneID)
         binFile = os.path.join(lstFolder,"lndsr."+landsat.sceneID+".cband6.bin")
