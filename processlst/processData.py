@@ -73,7 +73,6 @@ class RTTOV:
         filename = 'MERRA2_%d.inst1_2d_asm_Nx.%04d%02d%02d.nc4' % (fileType,self.year,self.month,self.day)
         fullUrl =os.path.join(opendap_url,product,'%04d'% self.year,'%02d'% self.month,filename)
         #d=open_dods(fullUrl+'?PS[1:1:23][0:1:360][0:1:575]')
-        print (fullUrl)
         d = open_url(fullUrl, session=self.session)
     #    d.keys()
         #surface presure [Pa]
@@ -114,7 +113,8 @@ class RTTOV:
         v10 = np.squeeze(v10In[self.hr,minY:maxY,minX:maxX])
         v10rshp =np.reshape(v10,v10.shape[0]*v10.shape[1])
         
-        opendap_url = 'https://goldsmr5.sci.gsfc.nasa.gov/opendap/hyrax/MERRA2/'
+        #opendap_url = 'https://goldsmr5.sci.gsfc.nasa.gov/opendap/hyrax/MERRA2/'
+        opendap_url = 'http://goldsmr5.sci.gsfc.nasa.gov:80/opendap/MERRA2/'
         product = 'M2I3NVASM.5.12.4'
         filename = 'MERRA2_%d.inst3_3d_asm_Nv.%04d%02d%02d.nc4' % (fileType,self.year,self.month,self.day)
         fullUrl =os.path.join(opendap_url,product,'%04d'% self.year,'%02d'% self.month,filename)
