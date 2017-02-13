@@ -159,7 +159,7 @@ def main():
         keyring.set_password("nasa",earthLoginUser,earthLoginPass)
     else:
         earthLoginPass = str(keyring.get_password("nasa",earthLoginUser)) 
-    auth = (earthLoginUser,earthLoginPass)
+    auth = ("%s"% earthLoginUser,"%s"% earthLoginPass)
     base = os.getcwd()    
     Folders = folders(base)    
     landsatLST = Folders['landsatLST']
