@@ -13,6 +13,7 @@ import sys
 import pyrttov
 import shutil
 import urllib
+import pycurl
 from .processData import Landsat,RTTOV
 from .utils import folders,untar
 
@@ -147,7 +148,7 @@ def runRTTOV(profileDict):
         
     return tirsRttov
 
-if __name__ == '__main__':
+def main():
     
     base = os.getcwd()    
     Folders = folders(base)    
@@ -174,3 +175,9 @@ if __name__ == '__main__':
         
             
         subprocess.call(["gdal_translate","-of", "ENVI", "%s" % tifFile, "%s" % binFile])
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (KeyboardInterrupt, pycurl.error):
+        exit('Received Ctrl + C... Exiting! Bye.', 1)   
