@@ -16,6 +16,7 @@ import urllib
 import pycurl
 import keyring
 import getpass
+from pydap.cas.urs import setup_session
 from .processData import Landsat,RTTOV
 from .utils import folders,untar
 
@@ -159,7 +160,8 @@ def main():
         keyring.set_password("nasa",earthLoginUser,earthLoginPass)
     else:
         earthLoginPass = str(keyring.get_password("nasa",earthLoginUser)) 
-    auth = ("%s"% earthLoginUser,"%s"% earthLoginPass)
+
+    session = setup_session(earthLoginUser, earthLoginPass)
     base = os.getcwd()    
     Folders = folders(base)    
     landsatLST = Folders['landsatLST']
@@ -172,8 +174,8 @@ def main():
     # ------------------------------------------------------------------------
     for i in xrange(len(sceneIDlist)):
         inFN = sceneIDlist[i]
-        landsat = Landsat(inFN,auth)
-        rttov = RTTOV(inFN,auth)
+        landsat = Landsat(inFN,session)
+        rttov = RTTOV(inFN,session)
         lstFolder = os.path.join(landsatLST,landsat.scene)
         tifFile = os.path.join(lstFolder,'%s_lst.tiff'% landsat.sceneID)
         binFile = os.path.join(lstFolder,"lndsr."+landsat.sceneID+".cband6.bin")
