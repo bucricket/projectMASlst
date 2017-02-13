@@ -67,6 +67,9 @@ def folders(base):
     landsatSR = os.path.join(landsatDataBase,'SR')
     if not os.path.exists(landsatSR):
         os.makedirs(landsatSR)
+    landsatTemp = os.path.join(landsatSR,'temp')
+    if not os.path.exists(landsatTemp):
+        os.makedirs(landsatTemp)
     landsatBT = os.path.join(landsatDataBase,'BT')
     if not os.path.exists(landsatBT):
         os.makedirs(landsatBT)
@@ -84,7 +87,8 @@ def folders(base):
         os.makedirs(ASTERmosaicTemp)
     out = {'landsatLST':landsatLST,'landsatSR':landsatSR,'landsatBT':landsatBT,
     'asterEmissivityBase':asterEmissivityBase,'ASTERmosaicTemp':ASTERmosaicTemp,
-    'landsatDataBase':landsatDataBase, 'landsatEmissivityBase':landsatEmissivityBase}
+    'landsatDataBase':landsatDataBase, 'landsatEmissivityBase':landsatEmissivityBase,
+    'landsatTemp':landsatTemp}
     return out
 
         
