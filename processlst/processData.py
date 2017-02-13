@@ -7,7 +7,7 @@ Created on Sat Feb 11 21:33:18 2017
 """
 import os 
 import numpy as np
-from pydap import open_url
+from pydap.client import open_url
 import datetime
 import subprocess
 from osgeo import gdal
@@ -310,7 +310,7 @@ class Landsat:
         os.makedirs(self.ASTERmosaicTemp)
         return resampName
     
-    def processLandsatLST(self,tirsRttov,landsatscene,merraDict):
+    def processLandsatLST(self,tirsRttov,merraDict):
     
         origShap = merraDict['origShape']
         surfgeom=merraDict['SurfGeom']
@@ -377,11 +377,11 @@ class Landsat:
         Lg = None
           
         #get emissivity from ASTER
-        path_row = landsatscene
-        if not os.path.exists(os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % path_row)):    
+        
+        if not os.path.exists(os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)):    
             ASTERemisFN = self.processASTERemis()
         else:
-            ASTERemisFN = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % path_row)
+            ASTERemisFN = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)
         aster = gdal.Open(ASTERemisFN)
         emis = aster.ReadAsArray()
         print "emis Size: %f,%f" % (emis.shape[0],emis.shape[1])
@@ -394,7 +394,7 @@ class Landsat:
 
         LST = self.Kappa2*(1/np.log(self.Kappa1/surfRad))
         lstFolder = os.path.join(self.landsatLST,self.scene)
-        lstName = os.path.join(lstFolder,'%s_lst.tiff'% landsatscene)
+        lstName = os.path.join(lstFolder,'%s_lst.tiff'% self.sceneID)
         #write LST to a geoTiff
         self.ls.clone(lstName ,LST)
         #writeImageData(LST,geo,proj,LST.shape,'GTiff',lstName,gdal.GDT_Float32)
