@@ -21,11 +21,13 @@ from .utils import folders,writeArray2Tiff,getHTTPdata
 
 class RTTOV:
     def __init__(self, filepath,session):
-
+        base = os.getcwd()
+        Folders = folders(base)  
         self.session = session
         self.sceneID = filepath.split(os.sep)[-1][:21]
         self.scene = self.sceneID[3:9]
-        self.yeardoy = self.sceneID[9:16]        
+        self.yeardoy = self.sceneID[9:16]     
+        self.landsatSR = Folders['landsatSR']
         meta = landsat_metadata(os.path.join(self.landsatSR, 
                                                           self.scene,'%s_MTL.txt' % self.sceneID))
         self.ulLat = meta.CORNER_UL_LAT_PRODUCT
@@ -204,9 +206,7 @@ class RTTOV:
 
 class Landsat:
     def __init__(self, filepath,session):
-        base = os.path.abspath(os.path.join(filepath,os.pardir,os.pardir,os.pardir,
-                                            os.pardir,os.pardir))
-        print base
+        base = os.getcwd()
         Folders = folders(base)    
         self.session = session
         self.landsatLC = Folders['landsatLST']
