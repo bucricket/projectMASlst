@@ -68,7 +68,7 @@ class RTTOV:
         #inst1_2d_asm_Nx (M2I1NXASM): Single-Level Diagnostics
         #=============================================================================
         #'https://goldsmr4.sci.gsfc.nasa.gov/opendap/hyrax/MERRA2/'
-        opendap_url = 'https://goldsmr4.sci.gsfc.nasa.gov/opendap/hyrax/MERRA2/
+        opendap_url = 'https://goldsmr4.sci.gsfc.nasa.gov/opendap/hyrax/MERRA2/'
         product = 'M2I1NXASM.5.12.4'
         filename = 'MERRA2_%d.inst1_2d_asm_Nx.%04d%02d%02d.nc4' % (fileType,self.year,self.month,self.day)
         fullUrl =os.path.join(opendap_url,product,'%04d'% self.year,'%02d'% self.month,filename)
