@@ -177,7 +177,7 @@ def main():
         lstFolder = os.path.join(landsatLST,landsat.scene)
         tifFile = os.path.join(lstFolder,'%s_lst.tiff'% landsat.sceneID)
         binFile = os.path.join(lstFolder,"lndsr."+landsat.sceneID+".cband6.bin")
-        if os.path.exists(tifFile):
+        if not os.path.exists(tifFile):
             profileDict = rttov.preparePROFILEdata()
             tiirsRttov = runRTTOV(profileDict)
             landsat.processLandsatLST(tiirsRttov,profileDict)
