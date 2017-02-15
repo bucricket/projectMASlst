@@ -16,7 +16,7 @@ import urllib
 import pycurl
 import keyring
 import getpass
-from pydap.cas.urs import setup_session
+from .pydap.cas.urs import setup_session
 from .processData import Landsat,RTTOV
 from .utils import folders,untar
 
