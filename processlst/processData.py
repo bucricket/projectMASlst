@@ -7,7 +7,7 @@ Created on Sat Feb 11 21:33:18 2017
 """
 import os 
 import numpy as np
-from pydap.client import open_url
+from processlst.pydap.client import open_url
 from datetime import datetime
 import subprocess
 from osgeo import gdal
