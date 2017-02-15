@@ -165,7 +165,8 @@ def main():
     base = os.getcwd()    
     Folders = folders(base)    
     landsatLST = Folders['landsatLST']
-    landsatTemp = Folders['landsatTemp']    
+    landsatTemp = Folders['landsatTemp']   
+    landsatDataBase = Folders['landsatDataBase'] 
     sceneIDlist = glob.glob(os.path.join(landsatTemp,'*toa*'))
 
 
@@ -177,8 +178,8 @@ def main():
         landsat = Landsat(inFN,session)
         rttov = RTTOV(inFN,session)
         lstFolder = os.path.join(landsatLST,landsat.scene)
-        tifFile = os.path.join(lstFolder,'%s_lst.tiff'% landsat.sceneID)
-        binFile = os.path.join(lstFolder,"lndsr."+landsat.sceneID+".cband6.bin")
+        tifFile = os.path.join(landsatTemp,'%s_lst.tiff'% landsat.sceneID)
+        binFile = os.path.join(landsatTemp,"lndsr."+landsat.sceneID+".cband6.bin")
         if not os.path.exists(tifFile):
             profileDict = rttov.preparePROFILEdata()
             tiirsRttov = runRTTOV(profileDict)
@@ -187,6 +188,20 @@ def main():
         
             
         subprocess.call(["gdal_translate","-of", "ENVI", "%s" % tifFile, "%s" % binFile])
+    #=====sharpen the corrected LST==========================================
+    subprocess.call["lndlst_dms3_sa.csh","%s" % landsatTemp]
+    
+    #=====move files to their respective directories and remove temp
+    for i in xrange(len(sceneIDlist)):
+        inFN = sceneIDlist[i]
+        landsat = Landsat(inFN,session)
+        sharpenedSceneDir = os.path.join(landsatDataBase,'LST_sharpened',landsat.scene)
+        if not os.path.exists(sharpenedSceneDir):
+            os.mkdir(sharpenedSceneDir)
+        binFN = os.path.join(landsatLST,'%s.sharpened_band6.bin' % landsat.sceneID)
+        tifFN = os.path.join(sharpenedSceneDir,'%s_lstSharp.tiff' % landsat.sceneID)
+        subprocess.call(["gdal_translate", "-of","GTiff","%s" % binFN,"%s" % tifFN]) 
+
 
 if __name__ == "__main__":
     try:
