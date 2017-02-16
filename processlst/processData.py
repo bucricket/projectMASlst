@@ -15,8 +15,8 @@ import shutil
 import glob
 from .landsatTools import landsat_metadata,GeoTIFF
 from .utils import folders,writeArray2Tiff,getHTTPdata
-from .pydap_fork import urs
-from .pydap_fork import client
+from processlst.pydap_fork import urs
+from processlst.pydap_fork import client
 
 
 
