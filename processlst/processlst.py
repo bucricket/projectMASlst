@@ -16,8 +16,9 @@ import urllib
 import pycurl
 import keyring
 import getpass
+from .pydap_fork import urs
 sys.path.insert(0, './pydap')
-from pydap.cas.urs import setup_session
+from Pydap.cas.urs import setup_session
 from .processData import Landsat,RTTOV
 from .utils import folders,untar
 
@@ -162,7 +163,6 @@ def main():
     else:
         earthLoginPass = str(keyring.get_password("nasa",earthLoginUser)) 
 
-    session = setup_session(earthLoginUser, earthLoginPass)
     base = os.getcwd()    
     Folders = folders(base)    
     landsatLST = Folders['landsatLST']
@@ -176,8 +176,10 @@ def main():
     # ------------------------------------------------------------------------
     for i in xrange(len(sceneIDlist)):
         inFN = sceneIDlist[i]
-        landsat = Landsat(inFN,session)
-        rttov = RTTOV(inFN,session)
+        landsat = Landsat(inFN,username = earthLoginUser,
+                          password = earthLoginPass)
+        rttov = RTTOV(inFN,username = earthLoginUser,
+                          password = earthLoginPass)
         lstFolder = os.path.join(landsatLST,landsat.scene)
         tifFile = os.path.join(landsatTemp,'%s_lst.tiff'% landsat.sceneID)
         binFile = os.path.join(landsatTemp,"lndsr."+landsat.sceneID+".cband6.bin")
@@ -195,7 +197,8 @@ def main():
     #=====move files to their respective directories and remove temp
     for i in xrange(len(sceneIDlist)):
         inFN = sceneIDlist[i]
-        landsat = Landsat(inFN,session)
+        landsat = Landsat(inFN,username = earthLoginUser,
+                          password = earthLoginPass)
         sharpenedSceneDir = os.path.join(landsatDataBase,'LST_sharpened',landsat.scene)
         if not os.path.exists(sharpenedSceneDir):
             os.mkdir(sharpenedSceneDir)

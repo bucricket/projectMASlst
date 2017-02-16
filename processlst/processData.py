@@ -7,7 +7,6 @@ Created on Sat Feb 11 21:33:18 2017
 """
 import os 
 import numpy as np
-from pydap.client import open_url
 from datetime import datetime
 import subprocess
 from osgeo import gdal
@@ -16,14 +15,17 @@ import shutil
 import glob
 from .landsatTools import landsat_metadata,GeoTIFF
 from .utils import folders,writeArray2Tiff,getHTTPdata
+from .pydap_fork import urs
+from .pydap_fork import client
 
 
 
 class RTTOV:
-    def __init__(self, filepath,session):
+    def __init__(self, filepath,username,password):
         base = os.getcwd()
         Folders = folders(base)  
-        self.session = session
+        self.earthLoginUser = username
+        self.earthLoginPass = password
         self.sceneID = filepath.split(os.sep)[-1][:21]
         self.scene = self.sceneID[3:9]
         self.yeardoy = self.sceneID[9:16]     
@@ -73,7 +75,10 @@ class RTTOV:
         filename = 'MERRA2_%d.inst1_2d_asm_Nx.%04d%02d%02d.nc4' % (fileType,self.year,self.month,self.day)
         fullUrl =os.path.join(opendap_url,product,'%04d'% self.year,'%02d'% self.month,filename)
         #d=open_dods(fullUrl+'?PS[1:1:23][0:1:360][0:1:575]')
-        d = open_url(fullUrl, session=self.session)
+        session = urs.setup_session(username = self.earthLoginUser, 
+                            password = self.earthLoginPass,
+                            check_url=fullUrl)
+        d = client.open_url(fullUrl, session=session)
     #    d.keys()
         #surface presure [Pa]
         surfacePressure=d.PS
@@ -117,7 +122,10 @@ class RTTOV:
         product = 'M2I3NVASM.5.12.4'
         filename = 'MERRA2_%d.inst3_3d_asm_Nv.%04d%02d%02d.nc4' % (fileType,self.year,self.month,self.day)
         fullUrl =os.path.join(opendap_url,product,'%04d'% self.year,'%02d'% self.month,filename)
-        d = open_url(fullUrl,session=self.session)
+        session = urs.setup_session(username = self.earthLoginUser, 
+                    password = self.earthLoginPass,
+                    check_url=fullUrl)
+        d = client.open_url(fullUrl,session=session)
         hr = int(np.round(self.hr/3.)) # convert from 1 hr to 3 hr dataset
         
         #layers specific humidity [kg kg -1] -> 2 m water vapor [ppmv]
@@ -206,10 +214,11 @@ class RTTOV:
     
 
 class Landsat:
-    def __init__(self, filepath,session):
+    def __init__(self, filepath,username,password):
         base = os.getcwd()
         Folders = folders(base)    
-        self.session = session
+        self.earthLoginUser = username
+        self.earthLoginPass = password
         self.landsatLC = Folders['landsatLST']
         self.landsatSR = Folders['landsatSR']
         self.landsatBT = Folders['landsatBT']
@@ -281,7 +290,7 @@ class Landsat:
                     print "downloading ASTER..."
                     #urllib.urlretrieve(ASTERurl,localAsterFN) # THIS NO LONGER WORKS BECAUSE NASA REQUIRES LOGIN
 #                    status = downloadEarthdata(ASTERurl,localAsterFN)
-                    getHTTPdata(ASTERurl,localAsterFN,(self.session[0],self.session[1]))
+                    getHTTPdata(ASTERurl,localAsterFN,(self.earthLoginUser,self.earthLoginPass))
            
             
             
