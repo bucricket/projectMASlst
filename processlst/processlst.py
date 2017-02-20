@@ -63,6 +63,10 @@ def runRTTOV(profileDict):
     out = p.communicate()
     condaPath = out[0][:-1]
     rttovPath = os.path.join(condaPath,'share','rttov113')
+    if not os.path.exists(rttovPath):
+        print("you must register here https://nwpsaf.eu/site/software/rttov/rttov-v11/")
+        print("download and untar rttov into %s" % os.path.join(condaPath,"share"))
+        sys.exit()
     rttovCoefPath = os.path.join(rttovPath,'rtcoef_rttov11')
     if not os.path.exists(rttovCoefPath):
         base = os.getcwd()
