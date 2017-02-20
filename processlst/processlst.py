@@ -67,7 +67,8 @@ def runRTTOV(profileDict):
     if not os.path.exists(os.path.join(rttovCoefPath,'rttov7pred54L')):
         base = os.getcwd()
         # ========download coefficents
-        os.makedirs(rttovCoefPath) 
+        if not os.path.exists(rttovCoefPath):
+            os.makedirs(rttovCoefPath) 
         shutil.copyfile("./rttov_coeff_download.sh",os.path.join(rttovCoefPath,"rttov_coeff_download.sh"))
         os.chdir(rttovCoefPath)
         subprocess(['rttov_coeff_download.sh'])
