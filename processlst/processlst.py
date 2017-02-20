@@ -64,26 +64,21 @@ def runRTTOV(profileDict):
     condaPath = out[0][:-1]
     rttovPath = os.path.join(condaPath,'share','rttov113')
     rttovCoefPath = os.path.join(rttovPath,'rtcoef_rttov11')
-    if not os.path.exists(os.path.join(rttovCoefPath,'rttov7pred54L')):
+    rttovEmisPath = os.path.join(rttovPath,'emis_data')
+    if not os.path.exists(rttovEmisPath):
+        os.makedirs(rttovEmisPath)
         base = os.getcwd()
-        # ========download coefficents
-        if not os.path.exists(rttovCoefPath):
-            os.makedirs(rttovCoefPath) 
-        shutil.copyfile("./rttov_coeff_download.sh",os.path.join(rttovCoefPath,"rttov_coeff_download.sh"))
-        os.chdir(rttovCoefPath)
-        subprocess(['rttov_coeff_download.sh'])
         # ========download and untar emis atlas    
-        
-        rttovEmisPath = os.path.join(rttovPath,'emis_data')
         downfile = urllib.URLopener()
         downfile.urlretrieve('http://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_rttov11_hdf5.tar', 
                              os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'))
         os.chdir(rttovEmisPath)
         untar(os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'),
               os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5'))
-    
+    rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
+    if not os.path.exists(rttovBRDFPath):
+        os.makedirs(rttovBRDFPath)   
         # =========download and untar BRDF atlas        
-        rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
         downfile = urllib.URLopener()
         downfile.urlretrieve('http://nwpsaf.eu/downloads/brdf_data/cms_brdf_atlas_hdf5.tar', 
                              os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar'))
@@ -94,8 +89,7 @@ def runRTTOV(profileDict):
         os.chdir(base)
         
     
-    tirsRttov.FileCoef = '{}/{}'.format(rttovPath,
-                                       "rtcoef_rttov11/rttov7pred54L/rtcoef_landsat_8_tirs.dat")
+    tirsRttov.FileCoef = '{}/{}'.format(rttovCoefPath,"rtcoef_landsat_8_tirs.dat")
     
     #tirsRttov.EmisAtlasPath = os.path.join(base,'ALEXIdisALEXIfusion','rttov113','emis_data')
     tirsRttov.EmisAtlasPath = '{}/{}'.format(rttovPath, "emis_data")
