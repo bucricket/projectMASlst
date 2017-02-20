@@ -68,9 +68,10 @@ def runRTTOV(profileDict):
     if not os.path.exists(rttovEmisPath):
         os.makedirs(rttovEmisPath)
         base = os.getcwd()
-        # ========download and untar emis atlas    
+        # ========download and untar emis atlas  
+        print("downloading emis_atlas....")
         downfile = urllib.URLopener()
-        downfile.urlretrieve('http://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_rttov11_hdf5.tar', 
+        downfile.retrieve('http://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_rttov11_hdf5.tar', 
                              os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'))
         os.chdir(rttovEmisPath)
         untar(os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'),
@@ -78,9 +79,10 @@ def runRTTOV(profileDict):
     rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
     if not os.path.exists(rttovBRDFPath):
         os.makedirs(rttovBRDFPath)   
-        # =========download and untar BRDF atlas        
+        # =========download and untar BRDF atlas  
+        print("downloading brdf atlas....")
         downfile = urllib.URLopener()
-        downfile.urlretrieve('http://nwpsaf.eu/downloads/brdf_data/cms_brdf_atlas_hdf5.tar', 
+        downfile.retrieve('http://nwpsaf.eu/downloads/brdf_data/cms_brdf_atlas_hdf5.tar', 
                              os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar'))
         os.chdir(rttovBRDFPath)
         untar(os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar'),
