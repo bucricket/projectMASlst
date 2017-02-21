@@ -416,7 +416,7 @@ class Landsat:
         resampName2 = resampName[:-4]+'2.tiff'
         command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (ThermalRad.shape[1],ThermalRad.shape[0],resampName,resampName2)        
         out = subprocess.check_output(command, shell=True)
-        Lg = gdal.Open(resampName)
+        Lg = gdal.Open(resampName2)
         RadUp = Lg.ReadAsArray()
         RadUp = (RadUp*(nu4**2/10**7))#*.001
         print "RadUp Size: %f,%f" % (RadUp.shape[0],RadUp.shape[1])
@@ -433,7 +433,7 @@ class Landsat:
         resampName2 = resampName[:-4]+'2.tiff'
         command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (ThermalRad.shape[1],ThermalRad.shape[0],resampName,resampName2)        
         out = subprocess.check_output(command, shell=True)
-        Lg = gdal.Open(resampName)
+        Lg = gdal.Open(resampName2)
         trans = Lg.ReadAsArray()
         Lg = None
           
