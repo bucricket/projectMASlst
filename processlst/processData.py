@@ -221,7 +221,7 @@ class Landsat:
         self.earthLoginPass = password
         self.landsatLC = Folders['landsatLST']
         self.landsatSR = Folders['landsatSR']
-        self.landsatBT = Folders['landsatBT']
+        self.landsatTemp = Folders['landsatTemp']
         self.asterEmissivityBase= Folders['asterEmissivityBase']
         self.ASTERmosaicTemp = Folders['ASTERmosaicTemp']
         self.landsatDataBase = Folders['landsatDataBase']
@@ -331,9 +331,10 @@ class Landsat:
         lons = np.flipud(np.resize(surfgeom[:,1],origShap))
 
         channel=1
-        rawLandsatFolder =os.path.join(self.landsatBT, self.scene)
+        #rawLandsatFolder =os.path.join(self.landsatTemp, self.scene)
 
-        landsat = glob.glob(os.path.join(rawLandsatFolder,'*B10.TIF'))[0]
+        #landsat = glob.glob(os.path.join(rawLandsatFolder,'*B10.TIF'))
+        landsat = os.path.join(self.landsatTemp,"%s_toa_band10.tif" % self.sceneID)
         #convert from 30 to 90 m
         resampName = os.path.join('%sResample.vrt' % landsat[:-4])
         command = "gdalwarp -overwrite -r average -tr 90 90 -of VRT %s %s" % (landsat,resampName)
