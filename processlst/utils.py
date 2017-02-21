@@ -15,12 +15,14 @@ class earthDataHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
         return urllib2.HTTPRedirectHandler.http_error_302(self, req, fp, code, msg, headers)
     
 
-def getHTTPdata(url,outFN,auth):
-    username = auth[0]
-    password = auth[1]
-    request = urllib2.Request(url)
-    base64string = base64.encodestring('%s:%s' % (username, password)).replace('\n', '')
-    request.add_header("Authorization", "Basic %s" % base64string)  
+def getHTTPdata(url,outFN,auth=None):
+    request = urllib2.Request(url) 
+    if not (auth == None):
+        username = auth[0]
+        password = auth[1]
+        base64string = base64.encodestring('%s:%s' % (username, password)).replace('\n', '')
+        request.add_header("Authorization", "Basic %s" % base64string) 
+    
     cookieprocessor = urllib2.HTTPCookieProcessor()
     opener = urllib2.build_opener(earthDataHTTPRedirectHandler, cookieprocessor)
     urllib2.install_opener(opener) 

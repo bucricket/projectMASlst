@@ -17,7 +17,7 @@ import pycurl
 import keyring
 import getpass
 from .processData import Landsat,RTTOV
-from .utils import folders,untar
+from .utils import folders,untar,getHTTPdata
 
 
 def runRTTOV(profileDict):
@@ -70,9 +70,12 @@ def runRTTOV(profileDict):
         base = os.getcwd()
         # ========download and untar emis atlas  
         print("downloading emis_atlas....")
-        downfile = urllib.URLopener()
-        downfile.retrieve('http://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_rttov11_hdf5.tar', 
-                             os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'))
+        url = 'http://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_rttov11_hdf5.tar'
+        outFN = os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar')
+        getHTTPdata(url,outFN)
+#        downfile = urllib.URLopener()
+#        downfile.retrieve('http://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_rttov11_hdf5.tar', 
+#                             os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'))
         os.chdir(rttovEmisPath)
         untar(os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'),
               os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5'))
@@ -81,9 +84,12 @@ def runRTTOV(profileDict):
         os.makedirs(rttovBRDFPath)   
         # =========download and untar BRDF atlas  
         print("downloading brdf atlas....")
-        downfile = urllib.URLopener()
-        downfile.retrieve('http://nwpsaf.eu/downloads/brdf_data/cms_brdf_atlas_hdf5.tar', 
-                             os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar'))
+#        downfile = urllib.URLopener()
+#        downfile.retrieve('http://nwpsaf.eu/downloads/brdf_data/cms_brdf_atlas_hdf5.tar', 
+#                             os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar'))
+        url = 'http://nwpsaf.eu/downloads/brdf_data/cms_brdf_atlas_hdf5.tar'
+        outFN = os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar')
+        getHTTPdata(url,outFN)
         os.chdir(rttovBRDFPath)
         untar(os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar'),
         os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5'))
