@@ -293,7 +293,7 @@ class Landsat:
                 try:
                     getHTTPdata(ASTERurl,localAsterFN,(self.earthLoginUser,self.earthLoginPass))
                 except Exception:
-                    pass
+                    break
                     
            
             
