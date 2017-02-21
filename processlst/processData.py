@@ -371,7 +371,7 @@ class Landsat:
         # Landsat brightness temperature
         landsat = os.path.join(self.landsatTemp,"%s_toa_band10.tif" % self.sceneID)
         Lg = gdal.Open(landsat)
-        ThermalRad= Lg.ReadAsArray()
+        ThermalRad= Lg.ReadAsArray()/10.
         print "L8 Size: %f,%f" % (ThermalRad.shape[0],ThermalRad.shape[1])
         Lg = None
     
