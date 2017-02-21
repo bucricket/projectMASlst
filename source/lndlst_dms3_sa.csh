@@ -23,9 +23,6 @@ else
     set inp = "dms.inp"
 endif
 
-if (! -e $lndlst) then
-  mkdir $lndlst
-  endif
 
 # define DMS executable programs
 set tsamples = "get_samples"
