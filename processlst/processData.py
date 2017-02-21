@@ -436,9 +436,16 @@ class Landsat:
         #get emissivity from ASTER
         
         if not os.path.exists(os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)):
-            ASTERemisFN = self.processASTERemis()
+            ASTERemisFNtemp = self.processASTERemis()
+            ASTERemisFN = ASTERemisFNtemp[:-4]+'2.tiff'
+            command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[0],trans.shape[1],ASTERemisFNtemp,ASTERemisFN)
+            out = subprocess.check_output(command, shell=True)
         else:
-            ASTERemisFN = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)
+            ASTERemisFNtemp = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)
+            ASTERemisFN = ASTERemisFNtemp[:-4]+'2.tiff'
+            command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[0],trans.shape[1],ASTERemisFNtemp,ASTERemisFN)
+            out = subprocess.check_output(command, shell=True)
+            
         aster = gdal.Open(ASTERemisFN)
         emis = aster.ReadAsArray()
         print "emis Size: %f,%f" % (emis.shape[0],emis.shape[1])
