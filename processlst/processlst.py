@@ -63,7 +63,7 @@ def runRTTOV(profileDict):
     out = p.communicate()
     condaPath = out[0][:-1]
     rttovPath = os.path.join(condaPath,'share','rttov113')
-    rttovCoefPath = os.path.join(condaPath,'share')
+    rttovCoefPath = os.path.join(condaPath,'share','rttov')
     rttovEmisPath = os.path.join(rttovPath,'emis_data')
     rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
     if not os.path.exists(rttovEmisPath):
