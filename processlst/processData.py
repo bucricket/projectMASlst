@@ -389,8 +389,11 @@ class Landsat:
           
         #get emissivity from ASTER
         
-        if not os.path.exists(os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)):    
-            ASTERemisFN = self.processASTERemis()
+        if not os.path.exists(os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)):
+            try:
+                ASTERemisFN = self.processASTERemis()
+            except Exception:
+                pass
         else:
             ASTERemisFN = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)
         aster = gdal.Open(ASTERemisFN)
