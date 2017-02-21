@@ -354,7 +354,7 @@ class Landsat:
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
         writeArray2Tiff(RadDown,lats[:,0],lons[0,:],tempName)
 
-        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.Proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
+        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
         RadDown = Lg.ReadAsArray()
@@ -368,7 +368,7 @@ class Landsat:
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
 
         writeArray2Tiff(RadUp,lats[:,0],lons[0,:],tempName)
-        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.Proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
+        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
         RadUp = Lg.ReadAsArray()
