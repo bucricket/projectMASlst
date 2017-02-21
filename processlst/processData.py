@@ -327,8 +327,8 @@ class Landsat:
     def processASTERemis(self):     
         ASTERurlBase = 'https://e4ftl01.cr.usgs.gov/ASTT/AG100.003/2000.01.01'
         # use Landsat scene area
-        latRange = range(int(np.floor(self.lrLat)),int(np.ceil(self.ulLat))+1.)
-        lonRange = range(int(np.floor(self.ulLon)),int(np.ceil(self.lrLon))+1.)
+        latRange = range(int(np.floor(self.lrLat)),int(np.ceil(self.ulLat))+1)
+        lonRange = range(int(np.floor(self.ulLon)),int(np.ceil(self.lrLon))+1)
         for i in range(len(latRange)):
             for j in range(len(lonRange)):
                 asterFN = 'AG100.v003.%d.%d.0001.h5' % (latRange[i],lonRange[j])
