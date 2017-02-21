@@ -461,7 +461,7 @@ class Landsat:
         #get Kappa constants from Landsat
 
         LST = self.Kappa2*(1/np.log(self.Kappa1/surfRad))
-        lstFolder = os.path.join(self.landsatLST,self.scene)
+        lstFolder = os.path.join(self.landsatTemp,self.scene)
         if not os.path.exists(lstFolder):
             os.makedirs(lstFolder)
         lstName = os.path.join(lstFolder,'%s_lst.tiff'% self.sceneID)

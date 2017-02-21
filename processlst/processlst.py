@@ -174,7 +174,7 @@ def main():
     landsatLST = Folders['landsatLST']
     landsatTemp = Folders['landsatTemp']   
     landsatDataBase = Folders['landsatDataBase'] 
-    sceneIDlist = glob.glob(os.path.join(landsatTemp,'*toa*'))
+    sceneIDlist = glob.glob(os.path.join(landsatTemp,'*.xml'))
 
 
     # ------------------------------------------------------------------------
