@@ -219,7 +219,7 @@ class Landsat:
         Folders = folders(base)    
         self.earthLoginUser = username
         self.earthLoginPass = password
-        self.landsatLC = Folders['landsatLST']
+        self.landsatLST = Folders['landsatLST']
         self.landsatSR = Folders['landsatSR']
         self.landsatTemp = Folders['landsatTemp']
         self.asterEmissivityBase= Folders['asterEmissivityBase']
