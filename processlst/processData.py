@@ -339,10 +339,10 @@ class Landsat:
                 
                 if not os.path.isfile(localAsterFN):
                     print "downloading ASTER..."
-                try:
-                    getHTTPdata(ASTERurl,localAsterFN,(self.earthLoginUser,self.earthLoginPass))
-                except Exception:
-                    break           
+                    try:
+                        getHTTPdata(ASTERurl,localAsterFN,(self.earthLoginUser,self.earthLoginPass))
+                    except Exception:
+                        break           
             #open HDF file, extract the desired dataset and save to GTiff
                 
                 fh5  = h5py.File(localAsterFN , 'r')
