@@ -290,7 +290,11 @@ class Landsat:
                     print "downloading ASTER..."
                     #urllib.urlretrieve(ASTERurl,localAsterFN) # THIS NO LONGER WORKS BECAUSE NASA REQUIRES LOGIN
 #                    status = downloadEarthdata(ASTERurl,localAsterFN)
+                try:
                     getHTTPdata(ASTERurl,localAsterFN,(self.earthLoginUser,self.earthLoginPass))
+                except Exception:
+                    pass
+                    
            
             
             
@@ -390,10 +394,7 @@ class Landsat:
         #get emissivity from ASTER
         
         if not os.path.exists(os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)):
-            try:
-                ASTERemisFN = self.processASTERemis()
-            except Exception:
-                pass
+            ASTERemisFN = self.processASTERemis()
         else:
             ASTERemisFN = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)
         aster = gdal.Open(ASTERemisFN)
