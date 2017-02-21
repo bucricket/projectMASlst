@@ -323,7 +323,7 @@ class Landsat:
 #        shutil.rmtree(self.ASTERmosaicTemp)
 #        os.makedirs(self.ASTERmosaicTemp)
 #        return resampName
-    
+
     def processASTERemis(self):     
         ASTERurlBase = 'https://e4ftl01.cr.usgs.gov/ASTT/AG100.003/2000.01.01'
         # use Landsat scene area
@@ -331,7 +331,7 @@ class Landsat:
         lonRange = range(int(np.floor(self.ulLon)),int(np.ceil(self.lrLon))+1)
         for i in range(len(latRange)):
             for j in range(len(lonRange)):
-                asterFN = 'AG100.v003.%d.%d.0001.h5' % (latRange[i],lonRange[j])
+                asterFN = 'AG100.v003.%02d.%03d.0001.h5' % (latRange[i],lonRange[j])
                 # ASTER Emissivity product AG100 comes in 1 x 1 degree tiles where UL is given in the filename.
                 ASTERurl = os.path.join(ASTERurlBase,asterFN)
                 print ASTERurl
@@ -349,7 +349,7 @@ class Landsat:
                 EmisBand4 = np.array(fh5["/Emissivity/Mean/"])[3]/1000.
                 lats = np.array(fh5["/Geolocation/Latitude/"])
                 lons = np.array(fh5["/Geolocation/Longitude/"])
-                tempName = os.path.join(self.ASTERmosaicTemp,'emis%d%d.tiff'% (latRange[i],lonRange[j]))
+                tempName = os.path.join(self.ASTERmosaicTemp,'emis%02d%03d.tiff'% (latRange[i],lonRange[j]))
                 writeArray2Tiff(EmisBand4,lats[:,0],lons[0,:],tempName)
        
         #mosaic ,reproject and save as geotiff
