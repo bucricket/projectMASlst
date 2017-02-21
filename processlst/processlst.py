@@ -65,36 +65,42 @@ def runRTTOV(profileDict):
     rttovPath = os.path.join(condaPath,'share','rttov113')
     rttovCoefPath = os.path.join(rttovPath,'rtcoef_rttov11')
     rttovEmisPath = os.path.join(rttovPath,'emis_data')
-    if not os.path.exists(rttovEmisPath):
-        os.makedirs(rttovEmisPath)
-        base = os.getcwd()
-        # ========download and untar emis atlas  
-        print("downloading emis_atlas....")
-        url = 'http://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_rttov11_hdf5.tar'
-        outFN = os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar')
-        getHTTPdata(url,outFN)
-#        downfile = urllib.URLopener()
-#        downfile.retrieve('http://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_rttov11_hdf5.tar', 
-#                             os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'))
-        os.chdir(rttovEmisPath)
-        untar(os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'),
-              os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5'))
     rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
-    if not os.path.exists(rttovBRDFPath):
-        os.makedirs(rttovBRDFPath)   
-        # =========download and untar BRDF atlas  
-        print("downloading brdf atlas....")
-#        downfile = urllib.URLopener()
-#        downfile.retrieve('http://nwpsaf.eu/downloads/brdf_data/cms_brdf_atlas_hdf5.tar', 
-#                             os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar'))
-        url = 'http://nwpsaf.eu/downloads/brdf_data/cms_brdf_atlas_hdf5.tar'
-        outFN = os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar')
-        getHTTPdata(url,outFN)
-        os.chdir(rttovBRDFPath)
-        untar(os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar'),
-        os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5'))
-        #change back to the base directory
-        os.chdir(base)
+    if not os.path.exists(rttovEmisPath):
+        print(" go to https://nwpsaf.eu/site/software/rttov/download/#Emissivity_BRDF_atlas_data")
+        print(" download and untar the emissivity and brdf data into %s" % rttovPath )
+        print(" Then run the script again")
+        os.makedirs(rttovEmisPath)
+        os.makedirs(rttovBRDFPath) 
+        sys.exit()
+#        base = os.getcwd()
+#        # ========download and untar emis atlas  
+#        print("downloading emis_atlas....")
+#        url = 'http://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_rttov11_hdf5.tar'
+#        outFN = os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar')
+#        getHTTPdata(url,outFN)
+##        downfile = urllib.URLopener()
+##        downfile.retrieve('http://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_rttov11_hdf5.tar', 
+##                             os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'))
+#        os.chdir(rttovEmisPath)
+#        untar(os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5.tar'),
+#              os.path.join(rttovEmisPath,'uw_ir_emis_atlas_rttov11_hdf5'))
+#    rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
+#    if not os.path.exists(rttovBRDFPath):
+#        os.makedirs(rttovBRDFPath)   
+#        # =========download and untar BRDF atlas  
+#        print("downloading brdf atlas....")
+##        downfile = urllib.URLopener()
+##        downfile.retrieve('http://nwpsaf.eu/downloads/brdf_data/cms_brdf_atlas_hdf5.tar', 
+##                             os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar'))
+#        url = 'http://nwpsaf.eu/downloads/brdf_data/cms_brdf_atlas_hdf5.tar'
+#        outFN = os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar')
+#        getHTTPdata(url,outFN)
+#        os.chdir(rttovBRDFPath)
+#        untar(os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5.tar'),
+#        os.path.join(rttovBRDFPath,'cms_brdf_atlas_hdf5'))
+#        #change back to the base directory
+#        os.chdir(base)
         
     
     tirsRttov.FileCoef = '{}/{}'.format(rttovCoefPath,"rtcoef_landsat_8_tirs.dat")
