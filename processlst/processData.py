@@ -342,7 +342,7 @@ class Landsat:
                     try:
                         getHTTPdata(ASTERurl,localAsterFN,(self.earthLoginUser,self.earthLoginPass))
                     except Exception:
-                        break           
+                        continue          
             #open HDF file, extract the desired dataset and save to GTiff
                 
                 fh5  = h5py.File(localAsterFN , 'r')
