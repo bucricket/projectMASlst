@@ -367,10 +367,18 @@ class Landsat:
  
     
     def processLandsatLST(self,tirsRttov,merraDict):
+        
+        # Landsat brightness temperature
+        landsat = os.path.join(self.landsatTemp,"%s_toa_band10.tif" % self.sceneID)
+        Lg = gdal.Open(landsat)
+        ThermalRad= Lg.ReadAsArray()
+        print "L8 Size: %f,%f" % (ThermalRad.shape[0],ThermalRad.shape[1])
+        Lg = None
     
         origShap = merraDict['origShape']
         surfgeom=merraDict['SurfGeom']
         nlevels = merraDict['P'].shape[1]
+        
 
         #reshape and resize image to fit landsat
         lats = np.flipud(np.resize(surfgeom[:,0],origShap))
@@ -388,7 +396,10 @@ class Landsat:
 
         command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 30 30 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
         out = subprocess.check_output(command, shell=True)
-        Lg = gdal.Open(resampName)
+        resampName2 = resampName[:-4]+'2.tiff'
+        command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (ThermalRad.shape[1],ThermalRad.shape[0],resampName,resampName2)        
+        out = subprocess.check_output(command, shell=True)
+        Lg = gdal.Open(resampName2)
         RadDown = Lg.ReadAsArray()
         RadDown = (RadDown*(nu4**2/10**7))#*.001
         print "RadDown Size: %f,%f" % (RadDown.shape[0],RadDown.shape[1])
@@ -401,6 +412,9 @@ class Landsat:
 
         writeArray2Tiff(RadUp,lats[:,0],lons[0,:],tempName)
         command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 30 30 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
+        out = subprocess.check_output(command, shell=True)
+        resampName2 = resampName[:-4]+'2.tiff'
+        command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (ThermalRad.shape[1],ThermalRad.shape[0],resampName,resampName2)        
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
         RadUp = Lg.ReadAsArray()
@@ -416,24 +430,13 @@ class Landsat:
 
         command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 30 30 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
         out = subprocess.check_output(command, shell=True)
+        resampName2 = resampName[:-4]+'2.tiff'
+        command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (ThermalRad.shape[1],ThermalRad.shape[0],resampName,resampName2)        
+        out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
         trans = Lg.ReadAsArray()
         Lg = None
           
-        # Landsat brightness temperature
-        landsat = os.path.join(self.landsatTemp,"%s_toa_band10.tif" % self.sceneID)
-#        #convert from 30 to 90 m
-#        resampName = os.path.join('%sResample.vrt' % landsat[:-4])
-#        command = "gdalwarp -overwrite -r average -tr 30 30 -of VRT %s %s" % (landsat,resampName)
-#        out = subprocess.check_output(command, shell=True)
-        resampName2 = landsat[:-4]+'2.tiff'
-        command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[1],trans.shape[0],resampName,resampName2)        
-        out = subprocess.check_output(command, shell=True)
-        Lg = gdal.Open(resampName2)
-   
-        ThermalRad= Lg.ReadAsArray()
-        print "L8 Size: %f,%f" % (ThermalRad.shape[0],ThermalRad.shape[1])
-        Lg = None
         #get emissivity from ASTER
         
         if not os.path.exists(os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)):
