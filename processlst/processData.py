@@ -357,7 +357,7 @@ class Landsat:
         mosaicVRTcommand = 'gdalbuildvrt -srcnodata 0 %s %s/*.tiff' % (mosaicTempFN,self.ASTERmosaicTemp)
         out = subprocess.check_output(mosaicVRTcommand, shell=True)
         resampName = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)
-        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %f %f %f %f -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly, mosaicTempFN,resampName)
+        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 30 30 -te %f %f %f %f -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly, mosaicTempFN,resampName)
         out = subprocess.check_output(command, shell=True)
         print 'done processing ASTER'
         shutil.rmtree(self.ASTERmosaicTemp)
@@ -386,7 +386,7 @@ class Landsat:
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
         writeArray2Tiff(RadDown,lats[:,0],lons[0,:],tempName)
 
-        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
+        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 30 30 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
         RadDown = Lg.ReadAsArray()
@@ -400,7 +400,7 @@ class Landsat:
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
 
         writeArray2Tiff(RadUp,lats[:,0],lons[0,:],tempName)
-        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
+        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 30 30 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
         RadUp = Lg.ReadAsArray()
@@ -414,7 +414,7 @@ class Landsat:
         resampName = os.path.join('%sReproj.tiff' % tempName[:-4])
         writeArray2Tiff(trans,lats[:,0],lons[0,:],tempName)
 
-        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 90 90 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
+        command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 30 30 -te %d %d %d %d -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly,tempName,resampName)
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName)
         trans = Lg.ReadAsArray()
@@ -422,11 +422,11 @@ class Landsat:
           
         # Landsat brightness temperature
         landsat = os.path.join(self.landsatTemp,"%s_toa_band10.tif" % self.sceneID)
-        #convert from 30 to 90 m
-        resampName = os.path.join('%sResample.vrt' % landsat[:-4])
-        command = "gdalwarp -overwrite -r average -tr 90 90 -of VRT %s %s" % (landsat,resampName)
-        out = subprocess.check_output(command, shell=True)
-        resampName2 = resampName[:-4]+'2.tiff'
+#        #convert from 30 to 90 m
+#        resampName = os.path.join('%sResample.vrt' % landsat[:-4])
+#        command = "gdalwarp -overwrite -r average -tr 30 30 -of VRT %s %s" % (landsat,resampName)
+#        out = subprocess.check_output(command, shell=True)
+        resampName2 = landsat[:-4]+'2.tiff'
         command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[1],trans.shape[0],resampName,resampName2)        
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName2)
