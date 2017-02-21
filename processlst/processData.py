@@ -405,6 +405,7 @@ class Landsat:
         Lg = gdal.Open(resampName)
         RadUp = Lg.ReadAsArray()
         RadUp = (RadUp*(nu4**2/10**7))#*.001
+        print "RadUp Size: %f,%f" % (RadUp.shape[0],RadUp.shape[1])
         Lg = None
         
         #Process transmission
@@ -426,7 +427,7 @@ class Landsat:
         command = "gdalwarp -overwrite -r average -tr 90 90 -of VRT %s %s" % (landsat,resampName)
         out = subprocess.check_output(command, shell=True)
         resampName2 = resampName[:-4]+'2.tiff'
-        command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[0],trans.shape[1],resampName,resampName2)        
+        command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[1],trans.shape[0],resampName,resampName2)        
         out = subprocess.check_output(command, shell=True)
         Lg = gdal.Open(resampName2)
    
@@ -438,12 +439,12 @@ class Landsat:
         if not os.path.exists(os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)):
             ASTERemisFNtemp = self.processASTERemis()
             ASTERemisFN = ASTERemisFNtemp[:-4]+'2.tiff'
-            command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[0],trans.shape[1],ASTERemisFNtemp,ASTERemisFN)
+            command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[1],trans.shape[0],ASTERemisFNtemp,ASTERemisFN)
             out = subprocess.check_output(command, shell=True)
         else:
             ASTERemisFNtemp = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)
             ASTERemisFN = ASTERemisFNtemp[:-4]+'2.tiff'
-            command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[0],trans.shape[1],ASTERemisFNtemp,ASTERemisFN)
+            command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[1],trans.shape[0],ASTERemisFNtemp,ASTERemisFN)
             out = subprocess.check_output(command, shell=True)
             
         aster = gdal.Open(ASTERemisFN)
