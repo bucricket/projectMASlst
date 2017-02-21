@@ -377,21 +377,7 @@ class Landsat:
         lons = np.flipud(np.resize(surfgeom[:,1],origShap))
 
         channel=1
-        #rawLandsatFolder =os.path.join(self.landsatTemp, self.scene)
 
-        #landsat = glob.glob(os.path.join(rawLandsatFolder,'*B10.TIF'))
-        landsat = os.path.join(self.landsatTemp,"%s_toa_band10.tif" % self.sceneID)
-        #convert from 30 to 90 m
-        resampName = os.path.join('%sResample.vrt' % landsat[:-4])
-        command = "gdalwarp -overwrite -r average -tr 90 90 -of VRT %s %s" % (landsat,resampName)
-        out = subprocess.check_output(command, shell=True)
-        Lg = gdal.Open(resampName)
-   
-        ThermalRad= Lg.ReadAsArray()
-        print "L8 Size: %f,%f" % (ThermalRad.shape[0],ThermalRad.shape[1])
-        Lg = None
-        
-    
         nu4 = 1/(10.895*0.0001) # convert to cm
         
         #Process downwelling radiance
@@ -433,6 +419,20 @@ class Landsat:
         trans = Lg.ReadAsArray()
         Lg = None
           
+        # Landsat brightness temperature
+        landsat = os.path.join(self.landsatTemp,"%s_toa_band10.tif" % self.sceneID)
+        #convert from 30 to 90 m
+        resampName = os.path.join('%sResample.vrt' % landsat[:-4])
+        command = "gdalwarp -overwrite -r average -tr 90 90 -of VRT %s %s" % (landsat,resampName)
+        out = subprocess.check_output(command, shell=True)
+        resampName2 = resampName[:-4]+'2.tiff'
+        command = "gdalwarp -overwrite -ts %d %d -of GTiff %s %s" % (trans.shape[0],trans.shape[1],resampName,resampName2)        
+        out = subprocess.check_output(command, shell=True)
+        Lg = gdal.Open(resampName2)
+   
+        ThermalRad= Lg.ReadAsArray()
+        print "L8 Size: %f,%f" % (ThermalRad.shape[0],ThermalRad.shape[1])
+        Lg = None
         #get emissivity from ASTER
         
         if not os.path.exists(os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)):
