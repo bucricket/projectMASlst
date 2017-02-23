@@ -470,7 +470,8 @@ class Landsat:
         
         lstName = os.path.join(self.landsatTemp,'%s_lst.tiff'% self.sceneID)
         #write LST to a geoTiff
-        self.ls.clone(lstName ,LST)
+        #self.ls.clone(lstName ,LST)
+        writeArray2Tiff(LST,self.ulat,self.ulon,lstName)
         #writeImageData(LST,geo,proj,LST.shape,'GTiff',lstName,gdal.GDT_Float32)
         
         print 'done processing LST'
