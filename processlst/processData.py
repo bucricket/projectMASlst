@@ -14,7 +14,7 @@ import h5py
 import shutil
 import glob
 from .landsatTools import landsat_metadata,GeoTIFF
-from .utils import folders,writeArray2Tiff,getHTTPdata
+from .utils import folders,writeArray2Tiff,writeArray2Tiff2,getHTTPdata
 from pydap.cas import urs
 from pydap import client
 
@@ -471,7 +471,8 @@ class Landsat:
         lstName = os.path.join(self.landsatTemp,'%s_lst.tiff'% self.sceneID)
         #write LST to a geoTiff
         #self.ls.clone(lstName ,LST)
-        writeArray2Tiff(LST,self.ulLat,self.ulLon,lstName)
+        writeArray2Tiff2(LST,self.delx,self.dely,self.ulx,self.uly,LST.shape[0],LST.shape[1],lstName)
+
         #writeImageData(LST,geo,proj,LST.shape,'GTiff',lstName,gdal.GDT_Float32)
         
         print 'done processing LST'
