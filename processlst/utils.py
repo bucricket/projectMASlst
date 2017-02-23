@@ -61,27 +61,7 @@ def writeArray2Tiff(data,lats,lons,outfile):
     ds.FlushCache()  
     
     ds = None
-    
-def writeArray2Tiff2(data,xres,yres,ulx,uly,xsize,ysize,outfile):
-    Projection = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
-    driver = gdal.GetDriverByName('GTiff')
-    ds = driver.Create(outfile, xsize, ysize, 1, gdal.GDT_Float32)
-    
-    srs = osr.SpatialReference()
-    if isinstance(Projection, basestring):        
-        srs.ImportFromProj4(Projection)
-    else:
-        srs.ImportFromEPSG(Projection)        
-    ds.SetProjection(srs.ExportToWkt())
-    
-    gt = [ulx, xres, 0, uly, 0, yres ]
-    ds.SetGeoTransform(gt)
-    
-    outband = ds.GetRasterBand(1)
-    outband.WriteArray(data)    
-    ds.FlushCache()  
-    
-    ds = None
+
 
 def folders(base):
     dataBase = os.path.join(base,'data')

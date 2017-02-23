@@ -462,16 +462,16 @@ class Landsat:
         surfRad =(((ThermalRad-RadUp)/trans)-(1-emis)*RadDown)/emis
         #get Kappa constants from Landsat
 
-        LST = self.Kappa2*(1/np.log(self.Kappa1/surfRad))
-        LST.astype('float32')
+        LST = np.array(self.Kappa2*(1/np.log(self.Kappa1/surfRad)), dtype='float32')
+
 #        lstFolder = os.path.join(self.landsatTemp,self.scene)
 #        if not os.path.exists(lstFolder):
 #            os.makedirs(lstFolder)
         
         lstName = os.path.join(self.landsatTemp,'%s_lst.tiff'% self.sceneID)
         #write LST to a geoTiff
-        #self.ls.clone(lstName ,LST)
-        writeArray2Tiff2(LST,self.delx,self.dely,self.ulx,self.uly,LST.shape[0],LST.shape[1],lstName)
+        self.ls.clone(lstName ,LST)
+
 
         #writeImageData(LST,geo,proj,LST.shape,'GTiff',lstName,gdal.GDT_Float32)
         
