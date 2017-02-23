@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 import subprocess
-import os
+import os, stat
 import shutil
 
 # set project base directory structure
@@ -34,7 +34,8 @@ srcDir = os.path.join(processDir,'source')
 
 shutil.copyfile(os.path.join(srcDir,'prepareDMS3_sa.csh'),os.path.join(prefix,'bin','prepareDMS3_sa.csh'))
 shutil.copyfile(os.path.join(srcDir,'lndlst_dms3_sa.csh'),os.path.join(prefix,'bin','lndlst_dms3_sa.csh'))
-
+os.chmod(os.path.join(prefix,'bin','prepareDMS3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
+os.chmod(os.path.join(prefix,'bin','lndlst_dms3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
 #=============setup the python scripts============================
 
 
