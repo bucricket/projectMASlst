@@ -32,8 +32,8 @@ srcDir = os.path.join(processDir,'source')
 #shutil.copyfile(os.path.join(srcDir,'prepareDMS3_sa.csh'),os.path.join(prefix,'lib','python2.7','site-packages','prepareDMS3_sa.csh'))
 #shutil.copyfile(os.path.join(srcDir,'lndlst_dms3_sa.csh'),os.path.join(prefix,'lib','python2.7','site-packages','lndlst_dms3_sa.csh'))
 
-shutil.copyfile(os.path.join(srcDir,'prepareDMS3_sa.csh'),os.path.join(processDir,'bin','prepareDMS3_sa.csh'))
-shutil.copyfile(os.path.join(srcDir,'lndlst_dms3_sa.csh'),os.path.join(processDir,'bin','lndlst_dms3_sa.csh'))
+shutil.copyfile(os.path.join(srcDir,'prepareDMS3_sa.csh'),os.path.join(prefix,'bin','prepareDMS3_sa.csh'))
+shutil.copyfile(os.path.join(srcDir,'lndlst_dms3_sa.csh'),os.path.join(prefix,'bin','lndlst_dms3_sa.csh'))
 
 #=============setup the python scripts============================
 
