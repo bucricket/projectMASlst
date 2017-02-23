@@ -209,7 +209,7 @@ def main():
         sharpenedSceneDir = os.path.join(landsatDataBase,'LST',landsat.scene)
         if not os.path.exists(sharpenedSceneDir):
             os.mkdir(sharpenedSceneDir)
-        binFN = os.path.join(landsatLST,'%s.sharpened_band6.bin' % landsat.sceneID)
+        binFN = os.path.join(landsatTemp,'%s.sharpened_band6.bin' % landsat.sceneID)
         tifFN = os.path.join(sharpenedSceneDir,'%s_lstSharp.tiff' % landsat.sceneID)
         subprocess.call(["gdal_translate", "-of","GTiff","%s" % binFN,"%s" % tifFN]) 
 
