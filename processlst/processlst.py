@@ -199,14 +199,14 @@ def main():
         subprocess.call(["gdal_translate","-of", "ENVI", "%s" % tifFile, "%s" % binFile])
         #subprocess.call(["GeoTiff2ENVI","%s" % tifFile, "%s" % binFile])
     #=====sharpen the corrected LST==========================================
-    #subprocess.call["lndlst_dms3_sa.csh","%s" % landsatTemp]
+    subprocess.call(["lndlst_dms3_sa.csh","%s" % landsatTemp])
     
     #=====move files to their respective directories and remove temp
     for i in xrange(len(sceneIDlist)):
         inFN = sceneIDlist[i]
         landsat = Landsat(inFN,username = earthLoginUser,
                           password = earthLoginPass)
-        sharpenedSceneDir = os.path.join(landsatDataBase,'LST_sharpened',landsat.scene)
+        sharpenedSceneDir = os.path.join(landsatDataBase,'LST',landsat.scene)
         if not os.path.exists(sharpenedSceneDir):
             os.mkdir(sharpenedSceneDir)
         binFN = os.path.join(landsatLST,'%s.sharpened_band6.bin' % landsat.sceneID)

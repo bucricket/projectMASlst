@@ -9,6 +9,7 @@ import urllib2, base64
 import os
 from osgeo import gdal,osr
 import tarfile
+import numpy as np
 
 class earthDataHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
     def http_error_302(self, req, fp, code, msg, headers):
