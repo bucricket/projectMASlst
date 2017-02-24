@@ -63,8 +63,10 @@ def runRTTOV(profileDict):
     p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
     out = p.communicate()
     condaPath = out[0][:-1]
+    s = pyrttov.__file__
+    envPath = os.sep.join(s.split(os.sep)[:-6])
     rttovPath = os.path.join(condaPath,'share','rttov113')
-    rttovCoefPath = os.path.join(condaPath,'share','rttov')
+    rttovCoefPath = os.path.join(envPath,'share','rttov')
     rttovEmisPath = os.path.join(rttovPath,'emis_data')
     rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
     if not os.path.exists(rttovEmisPath):
