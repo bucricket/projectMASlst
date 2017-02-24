@@ -13,6 +13,7 @@ import sys
 import pyrttov
 import shutil
 import urllib
+import argparse
 import pycurl
 import keyring
 import getpass
@@ -161,13 +162,20 @@ def runRTTOV(profileDict):
 
 def main():
     
+    parser = argparse.ArgumentParser()
+    parser.add_argument("earthLoginUser", type=str, help="earthLoginUser")
+    parser.add_argument("earthLoginPass", type=str, help="earthLoginPass")
+    args = parser.parse_args()
+    earthLoginUser = args.earthLoginUser
+    earthLoginPass = args.earthLoginPass
          # =====earthData credentials===============
-    earthLoginUser = str(getpass.getpass(prompt="earth login username:"))
-    if keyring.get_password("nasa",earthLoginUser)==None:
-        earthLoginPass = str(getpass.getpass(prompt="earth login password:"))
-        keyring.set_password("nasa",earthLoginUser,earthLoginPass)
-    else:
-        earthLoginPass = str(keyring.get_password("nasa",earthLoginUser)) 
+    if earthLoginUser == None:
+        earthLoginUser = str(getpass.getpass(prompt="earth login username:"))
+        if keyring.get_password("nasa",earthLoginUser)==None:
+            earthLoginPass = str(getpass.getpass(prompt="earth login password:"))
+            keyring.set_password("nasa",earthLoginUser,earthLoginPass)
+        else:
+            earthLoginPass = str(keyring.get_password("nasa",earthLoginUser)) 
 
     base = os.getcwd()    
     Folders = folders(base)    
