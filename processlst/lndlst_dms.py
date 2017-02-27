@@ -33,7 +33,7 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     #filestem = os.path.join(landsatLAI,"lndsr_modlai_samples.combined_%s-%s" %(startDate,endDate))
     lstFN = os.path.join(landsatTemp,"lndsr.%s.band6.bin" % sceneID)
     sharpendFN = os.path.join(landsatTemp,"%s.%s_sharpened_%d_%d.%s" % (sceneID,locglob,s_row,s_col,ext))
-    fn = os.path.join(landsatTemp,"dms.inp")
+    fn = os.path.join(landsatTemp,"dms_%d_%d.inp" % (s_row,s_col))
     file = open(fn, "w")
     file.write("# input file for Data Mining Sharpener\n")
     file.write("NFILES = 6\n")
@@ -138,10 +138,10 @@ def localPred(sceneID,th_res,s_row,s_col):
     perpareDMSinp(sceneID,s_row,s_col,"local","bin")
     
     # do cubist prediction
-    subprocess.call(["get_samples","dms.inp","%d" % os_row,"%d" % os_col,
+    subprocess.call(["get_samples","dms_%d_%d.inp" % (s_row,s_col),"%d" % os_row,"%d" % os_col,
     "%d" % oe_row,"%d" % oe_col])
     subprocess.call(["cubist","-f", "th_samples_%d_%d" % (s_row,s_col),"-u","-r","15"])
-    subprocess.call(["predict_fineT","dms.inp","%d" % s_row, "%d" % s_col, 
+    subprocess.call(["predict_fineT","dms_%d_%d.inp" % (s_row,s_col),"%d" % s_row, "%d" % s_col, 
     "%d" % e_row, "%d" % e_col])
 
 def getSharpenedLST(sceneID):
