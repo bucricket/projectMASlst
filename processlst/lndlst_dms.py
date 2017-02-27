@@ -20,7 +20,7 @@ landsatTemp = Folders['landsatTemp']
 # global prediction
 
 
-def perpareDMSinp(sceneID,s_row,s_col,locglob):
+def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     bands = glob.glob(os.path.join(landsatTemp,"*.dat"))
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
     ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT
@@ -32,7 +32,7 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob):
     zone = meta.UTM_ZONE
     #filestem = os.path.join(landsatLAI,"lndsr_modlai_samples.combined_%s-%s" %(startDate,endDate))
     lstFN = os.path.join(landsatTemp,"lndsr.%s.band6.bin" % sceneID)
-    sharpendFN = os.path.join(landsatTemp,"%s.%s_sharpened_%d_%d.%s" % (sceneID,locglob,s_row,s_col))
+    sharpendFN = os.path.join(landsatTemp,"%s.%s_sharpened_%d_%d.%s" % (sceneID,locglob,s_row,s_col,ext))
     fn = os.path.join(landsatTemp,"dms.inp")
     file = open(fn, "w")
     file.write("# input file for Data Mining Sharpener")
@@ -135,7 +135,7 @@ def localPred(sceneID,th_res,s_row,s_col):
     os_col = s_col - overlap
     oe_row = e_row +overlap
     oe_col = e_col + overlap
-    perpareDMSinp(sceneID,s_row,s_col,"local")
+    perpareDMSinp(sceneID,s_row,s_col,"local","bin")
     
     # do cubist prediction
     subprocess.call(["get_samples","dms.inp","%d" % os_row,"%d" % os_col,
@@ -150,7 +150,7 @@ def getSharpenedLST(sceneID):
     nrows = meta.REFLECTIVE_LINES
     ncols = meta.REFLECTIVE_SAMPLES
     # create dms.inp
-    perpareDMSinp(sceneID,0,0,"global")   
+    perpareDMSinp(sceneID,0,0,"global","global")  
     # do global prediction
     subprocess.call(["get_samples","dms.inp"])
     subprocess.call(["cubist","-f", "th_samples","-u","-r","30"])
