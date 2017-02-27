@@ -126,8 +126,8 @@ def localPred(sceneID,th_res,s_row,s_col):
     wsize1 = 200
     overlap1 = 20
     
-    wsize = wsize1*120./th_res
-    overlap = overlap1*120./th_res
+    wsize = wsize1*120/th_res
+    overlap = overlap1*120/th_res
     
     e_row = s_row+wsize
     e_col = s_col+wsize
@@ -158,7 +158,7 @@ def getSharpenedLST(sceneID):
     # do local prediction
     njobs = -1
     wsize1 = 200
-    wsize = wsize1*120./th_res
+    wsize = wsize1*120/th_res
     # process local parts in parallel
     Parallel(n_jobs=njobs, verbose=5)(delayed(localPred)(sceneID,th_res,s_row,s_col) for s_col in range(0,int(ncols/wsize),wsize) for s_row in range(0,int(nrows/wsize),wsize))
     # put the parts back together
