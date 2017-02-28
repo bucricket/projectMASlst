@@ -32,7 +32,7 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     ncols = meta.REFLECTIVE_SAMPLES
     zone = meta.UTM_ZONE
     #filestem = os.path.join(landsatLAI,"lndsr_modlai_samples.combined_%s-%s" %(startDate,endDate))
-    lstFN = os.path.join(landsatTemp,"lndsr.%s.band6.bin" % sceneID)
+    lstFN = os.path.join(landsatTemp,"lndsr.%s.cband6.bin" % sceneID)
     sharpendFN = os.path.join(landsatTemp,"%s.%s_sharpened_%d_%d.%s" % (sceneID,locglob,s_row,s_col,ext))
     fn = os.path.join(landsatTemp,"dms_%d_%d.inp" % (s_row,s_col))
     file = open(fn, "w")
@@ -84,7 +84,7 @@ def finalDMSinp(sceneID):
     zone = meta.UTM_ZONE
     native_Thres = 90.
     #filestem = os.path.join(landsatLAI,"lndsr_modlai_samples.combined_%s-%s" %(startDate,endDate))
-    lstFN = os.path.join(landsatTemp,"lndsr.%s.band6.bin" % sceneID)
+    lstFN = os.path.join(landsatTemp,"lndsr.%s.cband6.bin" % sceneID)
     sharpendFN = os.path.join(landsatTemp,"%s.sharpened_band6.bin" % (sceneID))
     fn = os.path.join(landsatTemp,"dms.inp")
     file = open(fn, "w")
