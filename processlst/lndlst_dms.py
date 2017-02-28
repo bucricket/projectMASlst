@@ -141,8 +141,8 @@ def localPred(sceneID,th_res,s_row,s_col):
     wsize1 = 200
     overlap1 = 20
     
-    wsize = int(wsize1*120/th_res)
-    overlap = int(overlap1*120/th_res)
+    wsize = int((wsize1*120)/th_res)
+    overlap = int((overlap1*120)/th_res)
     
     e_row = s_row+wsize
     e_col = s_col+wsize
@@ -164,13 +164,13 @@ def getSharpenedLST(sceneID):
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
     th_res = meta.GRID_CELL_SIZE_THERMAL
     if sceneID[2]=="5":
-        native_Thres = 120
+        th_res = 120
     elif sceneID[2]=="7":
-        native_Thres = 60
+        th_res = 60
     else:
-        native_Thres = 90
-    nrows = int(meta.REFLECTIVE_LINES/(native_Thres/meta.REFLECTIVE_LINES))
-    ncols = int(meta.REFLECTIVE_SAMPLES/(native_Thres/meta.REFLECTIVE_SAMPLES))
+        th_res = 90
+    nrows = int(meta.REFLECTIVE_LINES/(th_res/meta.REFLECTIVE_LINES))
+    ncols = int(meta.REFLECTIVE_SAMPLES/(th_res/meta.REFLECTIVE_SAMPLES))
     #dmsfn = os.path.join(landsatTemp,"dms_0_0.inp")
     dmsfn = "dms.inp"
     # create dms.inp
@@ -184,7 +184,7 @@ def getSharpenedLST(sceneID):
     print("========LOCAL PREDICTION===========")
     njobs = -1
     wsize1 = 200
-    wsize = int(wsize1*120/th_res)
+    wsize = int((wsize1*120)/th_res)
     # process local parts in parallel
     Parallel(n_jobs=njobs, verbose=5)(delayed(localPred)(sceneID,th_res,s_row,s_col) for s_col in range(0,int(ncols/wsize)*ncols,wsize) for s_row in range(0,int(nrows/wsize)*nrows,wsize))
     # put the parts back together
