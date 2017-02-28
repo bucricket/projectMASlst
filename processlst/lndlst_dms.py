@@ -81,6 +81,7 @@ def finalDMSinp(sceneID):
     nrows = meta.REFLECTIVE_LINES
     ncols = meta.REFLECTIVE_SAMPLES
     zone = meta.UTM_ZONE
+    native_Thres = 90.
     #filestem = os.path.join(landsatLAI,"lndsr_modlai_samples.combined_%s-%s" %(startDate,endDate))
     lstFN = os.path.join(landsatTemp,"lndsr.%s.band6.bin" % sceneID)
     sharpendFN = os.path.join(landsatTemp,"%s.sharpened_band6.bin" % (sceneID))
@@ -112,7 +113,7 @@ def finalDMSinp(sceneID):
     file.write("ORG_NROWS = %d" % nrows)
     file.write("ORG_NCOLS = %d" % ncols)
     
-    file.write("RES_TH_PIXEL_SIZE = %f " % th_res)
+    file.write("RES_TH_PIXEL_SIZE = %f " % native_Thres)
     
     file.write("PURE_CV_TH = 0.1")
     file.write("ZONE_SIZE = 240")
