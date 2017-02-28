@@ -66,7 +66,7 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     file.write("PURE_CV_TH = 0.1\n")
     file.write("ZONE_SIZE = 240\n")
     file.write("SMOOTH_FLAG = 1\n")
-    file.write("CUBIST_FILE_STEM = th_samples\n")
+    file.write("CUBIST_FILE_STEM = th_samples_%d_%d\n" % (s_row,s_col))
     file.write("OUT_FILE = %s\n" % sharpendFN)
     file.write("end")
     file.close()
@@ -136,12 +136,12 @@ def localPred(sceneID,th_res,s_row,s_col):
     oe_row = e_row +overlap
     oe_col = e_col + overlap
     perpareDMSinp(sceneID,s_row,s_col,"local","bin")
-    
+    dmsfn = os.path.join(landsatTemp,"dms_%d_%d.inp" % (s_row,s_col))
     # do cubist prediction
-    subprocess.call(["get_samples","dms_%d_%d.inp" % (s_row,s_col),"%d" % os_row,"%d" % os_col,
+    subprocess.call(["get_samples","%s" % dmsfn,"%d" % os_row,"%d" % os_col,
     "%d" % oe_row,"%d" % oe_col])
     subprocess.call(["cubist","-f", "th_samples_%d_%d" % (s_row,s_col),"-u","-r","15"])
-    subprocess.call(["predict_fineT","dms_%d_%d.inp" % (s_row,s_col),"%d" % s_row, "%d" % s_col, 
+    subprocess.call(["predict_fineT","%s" % dmsfn,"%d" % s_row, "%d" % s_col, 
     "%d" % e_row, "%d" % e_col])
 
 def getSharpenedLST(sceneID):
@@ -149,12 +149,13 @@ def getSharpenedLST(sceneID):
     th_res = meta.GRID_CELL_SIZE_THERMAL
     nrows = meta.REFLECTIVE_LINES
     ncols = meta.REFLECTIVE_SAMPLES
+    dmsfn = os.path.join(landsatTemp,"dms_0_0.inp")
     # create dms.inp
     perpareDMSinp(sceneID,0,0,"global","global")  
     # do global prediction
-    subprocess.call(["get_samples","dms.inp"])
+    subprocess.call(["get_samples","%s" % dmsfn])
     subprocess.call(["cubist","-f", "th_samples","-u","-r","30"])
-    subprocess.call(["predict_fineT","dms.inp"])
+    subprocess.call(["predict_fineT","%s" % dmsfn])
     # do local prediction
     njobs = -1
     wsize1 = 200
