@@ -28,11 +28,11 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
     th_res = meta.GRID_CELL_SIZE_THERMAL
     if sceneID[2]=="5":
-        native_Thres = 120.
+        native_Thres = 120
     elif sceneID[2]=="7":
-        native_Thres = 60.
+        native_Thres = 60
     else:
-        native_Thres = 90.
+        native_Thres = 90
         
     nrows = meta.REFLECTIVE_LINES
     ncols = meta.REFLECTIVE_SAMPLES
@@ -90,11 +90,11 @@ def finalDMSinp(sceneID,ext):
     ncols = meta.REFLECTIVE_SAMPLES
     zone = meta.UTM_ZONE
     if sceneID[2]=="5":
-        native_Thres = 120.
+        native_Thres = 120
     elif sceneID[2]=="7":
-        native_Thres = 60.
+        native_Thres = 60
     else:
-        native_Thres = 90.
+        native_Thres = 90
     #filestem = os.path.join(landsatLAI,"lndsr_modlai_samples.combined_%s-%s" %(startDate,endDate))
     lstFN = os.path.join(landsatTemp,"lndsr.%s.cband6.bin" % sceneID)
     sharpendFN = os.path.join(landsatTemp,"%s.sharpened_band6.%s" % (sceneID,ext))
@@ -164,11 +164,11 @@ def getSharpenedLST(sceneID):
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
     th_res = meta.GRID_CELL_SIZE_THERMAL
     if sceneID[2]=="5":
-        native_Thres = 120.
+        native_Thres = 120
     elif sceneID[2]=="7":
-        native_Thres = 60.
+        native_Thres = 60
     else:
-        native_Thres = 90.
+        native_Thres = 90
     nrows = meta.REFLECTIVE_LINES/(native_Thres/meta.REFLECTIVE_LINES)
     ncols = meta.REFLECTIVE_SAMPLES/(native_Thres/meta.REFLECTIVE_SAMPLES)
     #dmsfn = os.path.join(landsatTemp,"dms_0_0.inp")
