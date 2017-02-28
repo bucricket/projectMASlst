@@ -27,7 +27,13 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
     th_res = meta.GRID_CELL_SIZE_THERMAL
-    native_Thres = 90.
+    if sceneID[2]=="5":
+        native_Thres = 120.
+    elif sceneID[2]=="7":
+        native_Thres = 60.
+    else:
+        native_Thres = 90.
+        
     nrows = meta.REFLECTIVE_LINES
     ncols = meta.REFLECTIVE_SAMPLES
     zone = meta.UTM_ZONE
@@ -83,7 +89,12 @@ def finalDMSinp(sceneID,ext):
     nrows = meta.REFLECTIVE_LINES
     ncols = meta.REFLECTIVE_SAMPLES
     zone = meta.UTM_ZONE
-    native_Thres = 90.
+    if sceneID[2]=="5":
+        native_Thres = 120.
+    elif sceneID[2]=="7":
+        native_Thres = 60.
+    else:
+        native_Thres = 90.
     #filestem = os.path.join(landsatLAI,"lndsr_modlai_samples.combined_%s-%s" %(startDate,endDate))
     lstFN = os.path.join(landsatTemp,"lndsr.%s.cband6.bin" % sceneID)
     sharpendFN = os.path.join(landsatTemp,"%s.sharpened_band6.%s" % (sceneID,ext))
@@ -152,8 +163,14 @@ def localPred(sceneID,th_res,s_row,s_col):
 def getSharpenedLST(sceneID):
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
     th_res = meta.GRID_CELL_SIZE_THERMAL
-    nrows = meta.REFLECTIVE_LINES
-    ncols = meta.REFLECTIVE_SAMPLES
+    if sceneID[2]=="5":
+        native_Thres = 120.
+    elif sceneID[2]=="7":
+        native_Thres = 60.
+    else:
+        native_Thres = 90.
+    nrows = meta.REFLECTIVE_LINES/(native_Thres/meta.REFLECTIVE_LINES)
+    ncols = meta.REFLECTIVE_SAMPLES/(native_Thres/meta.REFLECTIVE_SAMPLES)
     #dmsfn = os.path.join(landsatTemp,"dms_0_0.inp")
     dmsfn = "dms.inp"
     # create dms.inp
@@ -169,7 +186,7 @@ def getSharpenedLST(sceneID):
     wsize1 = 200
     wsize = int(wsize1*120/th_res)
     # process local parts in parallel
-    Parallel(n_jobs=njobs, verbose=5)(delayed(localPred)(sceneID,th_res,s_row,s_col) for s_col in range(0,int(ncols/wsize),wsize) for s_row in range(0,int(nrows/wsize),wsize))
+    Parallel(n_jobs=njobs, verbose=5)(delayed(localPred)(sceneID,th_res,s_row,s_col) for s_col in range(0,int(ncols/wsize)*ncols,wsize) for s_row in range(0,int(nrows/wsize)*nrows,wsize))
     # put the parts back together
     finalFile = os.path.join(landsatTemp,'%s.sharpened_band6.local' % sceneID)
     subprocess.call(["gdal_merge.py", "-o", "%s" % finalFile , "%s" % os.path.join(landsatTemp,'%s.local*' % sceneID)])
