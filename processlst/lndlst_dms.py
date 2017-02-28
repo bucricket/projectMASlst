@@ -34,7 +34,8 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     #filestem = os.path.join(landsatLAI,"lndsr_modlai_samples.combined_%s-%s" %(startDate,endDate))
     lstFN = os.path.join(landsatTemp,"lndsr.%s.cband6.bin" % sceneID)
     sharpendFN = os.path.join(landsatTemp,"%s.%s_sharpened_%d_%d.%s" % (sceneID,locglob,s_row,s_col,ext))
-    fn = os.path.join(landsatTemp,"dms_%d_%d.inp" % (s_row,s_col))
+    #fn = os.path.join(landsatTemp,"dms_%d_%d.inp" % (s_row,s_col))
+    fn = "dms_%d_%d.inp" % (s_row,s_col)
     file = open(fn, "w")
     file.write("# input file for Data Mining Sharpener\n")
     file.write("NFILES = 6\n")
@@ -87,6 +88,7 @@ def finalDMSinp(sceneID):
     lstFN = os.path.join(landsatTemp,"lndsr.%s.cband6.bin" % sceneID)
     sharpendFN = os.path.join(landsatTemp,"%s.sharpened_band6.bin" % (sceneID))
     fn = os.path.join(landsatTemp,"dms.inp")
+    fn = "dms.inp"
     file = open(fn, "w")
     file.write("# input file for Data Mining Sharpener")
     file.write("NFILES = 6")
