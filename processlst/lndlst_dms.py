@@ -27,6 +27,7 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
     th_res = meta.GRID_CELL_SIZE_THERMAL
+    native_Thres = 90.
     nrows = meta.REFLECTIVE_LINES
     ncols = meta.REFLECTIVE_SAMPLES
     zone = meta.UTM_ZONE
@@ -61,7 +62,7 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     file.write("ORG_NROWS = %d\n" % nrows)
     file.write("ORG_NCOLS = %d\n" % ncols)
     
-    file.write("RES_TH_PIXEL_SIZE = %f \n" % th_res)
+    file.write("RES_TH_PIXEL_SIZE = %f \n" % native_Thres)
     
     file.write("PURE_CV_TH = 0.1\n")
     file.write("ZONE_SIZE = 240\n")
