@@ -153,12 +153,14 @@ def getSharpenedLST(sceneID):
     ncols = meta.REFLECTIVE_SAMPLES
     dmsfn = os.path.join(landsatTemp,"dms_0_0.inp")
     # create dms.inp
+    print("========GLOBAL PREDICTION===========")
     perpareDMSinp(sceneID,0,0,"global","global")  
     # do global prediction
     subprocess.call(["get_samples","%s" % dmsfn])
     subprocess.call(["cubist","-f", "th_samples","-u","-r","30"])
     subprocess.call(["predict_fineT","%s" % dmsfn])
     # do local prediction
+    print("========LOCAL PREDICTION===========")
     njobs = -1
     wsize1 = 200
     wsize = int(wsize1*120/th_res)
