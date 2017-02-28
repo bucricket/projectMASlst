@@ -102,7 +102,7 @@ def finalDMSinp(sceneID,ext):
     file.write("SW_FILL_VALUE = -9999")
     file.write("SW_CLOUD_CODE = 1")
     file.write("SW_DATA_RANGE = -2000, 16000")
-    file.write("SW_UPPER_LEFT_CORNER = %f %f" (ulx,uly))
+    file.write("SW_UPPER_LEFT_CORNER = %f %f" % (ulx,uly))
     file.write("SW_PROJECTION_CODE = 1")
     file.write("SW_PROJECTION_PARAMETERS = 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0")
     file.write("SW_PROJECTION_ZONE = %d" % zone)
