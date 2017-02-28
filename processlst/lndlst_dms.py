@@ -73,7 +73,7 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     file.write("end")
     file.close()
 
-def finalDMSinp(sceneID):
+def finalDMSinp(sceneID,ext):
     bands = glob.glob(os.path.join(landsatTemp,"*.dat"))
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
     ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT
@@ -86,7 +86,7 @@ def finalDMSinp(sceneID):
     native_Thres = 90.
     #filestem = os.path.join(landsatLAI,"lndsr_modlai_samples.combined_%s-%s" %(startDate,endDate))
     lstFN = os.path.join(landsatTemp,"lndsr.%s.cband6.bin" % sceneID)
-    sharpendFN = os.path.join(landsatTemp,"%s.sharpened_band6.bin" % (sceneID))
+    sharpendFN = os.path.join(landsatTemp,"%s.sharpened_band6.%s" % (sceneID,ext))
     fn = os.path.join(landsatTemp,"dms.inp")
     fn = "dms.inp"
     file = open(fn, "w")
@@ -155,10 +155,10 @@ def getSharpenedLST(sceneID):
     nrows = meta.REFLECTIVE_LINES
     ncols = meta.REFLECTIVE_SAMPLES
     #dmsfn = os.path.join(landsatTemp,"dms_0_0.inp")
-    dmsfn = "dms_0_0.inp"
+    dmsfn = "dms.inp"
     # create dms.inp
     print("========GLOBAL PREDICTION===========")
-    perpareDMSinp(sceneID,0,0,"global","global")  
+    finalDMSinp(sceneID,"global")  
     # do global prediction
     subprocess.call(["get_samples","%s" % dmsfn])
     subprocess.call(["cubist","-f", "th_samples","-u","-r","30"])
@@ -176,7 +176,7 @@ def getSharpenedLST(sceneID):
     shutil.copyfile(os.path.join(landsatTemp,'%s.sharpened_band6.global.hdr' % sceneID),os.path.join(landsatTemp,
     '%s.sharpened_band6.local.hdr' % sceneID))
     # combine the the local and global images
-    finalDMSinp(sceneID)
+    finalDMSinp(sceneID,"bin")
     subprocess.call(["combine_models","dms.inp"])
     
     
