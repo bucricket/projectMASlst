@@ -62,6 +62,29 @@ def writeArray2Tiff(data,lats,lons,outfile):
     ds.FlushCache()  
     
     ds = None
+    
+def writeArray2Envi(data,ulx,uly,xres,yres,Projection,outfile):
+    #Projection = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
+    nbands = data.shape[0]
+    nrows = data.shape[1]
+    ncols = data.shape[2]
+    
+    driver = gdal.GetDriverByName('ENVI')
+    ds = driver.Create(outfile, ncols, nrows, nbands, gdal.GDT_Float32)
+    
+    srs = osr.SpatialReference()
+    if isinstance(Projection, basestring):        
+        srs.ImportFromProj4(Projection)
+    else:
+        srs.ImportFromEPSG(Projection)        
+    ds.SetProjection(srs.ExportToWkt())
+    
+    gt = [ulx, xres, 0, uly, 0, yres ]
+    ds.SetGeoTransform(gt)
+ 
+    for band in range(nbands):
+        ds.GetRasterBand(band+1).WriteArray( data[band,:,:] )
+    ds = None
 
 
 def folders(base):
