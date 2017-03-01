@@ -118,7 +118,13 @@ def folders(base):
     'landsatTemp':landsatTemp}
     return out
 
-        
+def clean(directory,ext):
+    test=os.listdir(directory)
+
+    for item in test:
+        if item.startswith(ext):
+            os.remove(os.path.join(directory, item))
+            
 def untar(fname, fpath):
 
     tar = tarfile.open(fname)

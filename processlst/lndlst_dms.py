@@ -7,7 +7,7 @@ Created on Mon Feb 27 14:03:53 2017
 """
 import os
 from osgeo import gdal
-from .utils import folders,writeArray2Envi
+from .utils import folders,writeArray2Envi,clean
 from .landsatTools import landsat_metadata, GeoTIFF
 import glob
 import subprocess
@@ -18,6 +18,7 @@ base = os.getcwd()
 Folders = folders(base)   
 landsatSR = Folders['landsatSR']
 landsatTemp = Folders['landsatTemp']
+landsatLST = Folders['landsatLST']
 # global prediction
 
 
@@ -207,8 +208,6 @@ def getSharpenedLST(sceneID):
     writeArray2Envi(globalData,ulx,uly,xres,yres,ls.proj4,finalFile)
       
     #subprocess.call(["gdal_merge.py", "-o", "%s" % finalFile , "%s" % os.path.join(landsatTemp,'%s.local*' % sceneID)])
-#    shutil.copyfile(os.path.join(landsatTemp,'%s.sharpened_band6.global.hdr' % sceneID),os.path.join(landsatTemp,
-#    '%s.sharpened_band6.local.hdr' % sceneID))
     # combine the the local and global images
     finalDMSinp(sceneID,"bin")
     subprocess.call(["combine_models","dms.inp"])
@@ -217,6 +216,17 @@ def getSharpenedLST(sceneID):
     g = gdal.Open(fn)
     data = g.ReadAsArray()[1]
     ls.clone(tifFile,data)
+    # copy files to their proper places
+    scenePath = os.path.join(landsatLST,sceneID[3:9])
+    if not os.path.exists(scenePath):
+        os.mkdir(scenePath)
+    shutil.copyfile(tifFile ,os.path.join(scenePath,tifFile.split(os.sep)[-1]))
+    
+    # cleaning up    
+    clean(landsatTemp,"%s.local_sharpened" % sceneID)
+    clean(landsatTemp,"%s.sharpened" % sceneID)
+    clean(base,"th_samples")
+    clean(base,"dms")
     
     
     
