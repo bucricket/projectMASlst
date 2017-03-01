@@ -167,7 +167,6 @@ def getSharpenedLST(sceneID):
     xres = meta.GRID_CELL_SIZE_REFLECTIVE
     yres = meta.GRID_CELL_SIZE_REFLECTIVE   
     ls = GeoTIFF(os.path.join(landsatTemp,'%s_sr_band1.tif' % sceneID))
-    Projection = ls.proj4
     th_res = meta.GRID_CELL_SIZE_THERMAL
     if sceneID[2]=="5":
         th_res = 120
@@ -195,7 +194,7 @@ def getSharpenedLST(sceneID):
     Parallel(n_jobs=njobs, verbose=5)(delayed(localPred)(sceneID,th_res,s_row,s_col) for s_col in range(0,int(ncols/wsize)*wsize,wsize) for s_row in range(0,int(nrows/wsize)*wsize,wsize))
     # put the parts back together
     finalFile = os.path.join(landsatTemp,'%s.sharpened_band6.local' % sceneID)
-    #tifFile = os.path.join(landsatTemp,'%s.sharpened_band6.tif' % sceneID)
+    tifFile = os.path.join(landsatTemp,'%s_lstSharp.tiff' % sceneID)
     globFN = os.path.join(landsatTemp,"%s.sharpened_band6.global" % sceneID)
     Gg = gdal.Open(globFN)
     globalData = Gg.ReadAsArray()
@@ -205,7 +204,7 @@ def getSharpenedLST(sceneID):
             if os.path.exists(fn):
                 Lg = gdal.Open(fn)
                 globalData[0,s_row*3:s_row*3+wsize*3+1,s_col*3:s_col*3+wsize*3+1] = Lg.ReadAsArray(s_col*3,s_row*3,wsize*3+1,wsize*3+1)[0]
-    writeArray2Envi(globalData,ulx,uly,xres,yres,Projection,finalFile)
+    writeArray2Envi(globalData,ulx,uly,xres,yres,ls.proj4,finalFile)
       
     #subprocess.call(["gdal_merge.py", "-o", "%s" % finalFile , "%s" % os.path.join(landsatTemp,'%s.local*' % sceneID)])
 #    shutil.copyfile(os.path.join(landsatTemp,'%s.sharpened_band6.global.hdr' % sceneID),os.path.join(landsatTemp,
@@ -213,6 +212,13 @@ def getSharpenedLST(sceneID):
     # combine the the local and global images
     finalDMSinp(sceneID,"bin")
     subprocess.call(["combine_models","dms.inp"])
+    # convert from ENVI to geoTIFF
+    fn = os.path.join(landsatTemp,"%s.sharpened_band6.bin" % sceneID)
+    g = gdal.Open(fn)
+    data = g.ReadAsArray()[1]
+    ls.clone(tifFile,data)
+    
+    
     
     
  
