@@ -24,10 +24,9 @@ landsatTemp = Folders['landsatTemp']
 def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     bands = glob.glob(os.path.join(landsatTemp,"*.dat"))
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
-    ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT
-    uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
-    th_res = meta.GRID_CELL_SIZE_THERMAL
+    ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT-(sw_res*0.5)
+    uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT+(sw_res*0.5)
     if sceneID[2]=="5":
         native_Thres = 120
     elif sceneID[2]=="7":
@@ -83,10 +82,9 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
 def finalDMSinp(sceneID,ext):
     bands = glob.glob(os.path.join(landsatTemp,"*.dat"))
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
-    ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT
-    uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
-    th_res = meta.GRID_CELL_SIZE_THERMAL
+    ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT-(sw_res*0.5)
+    uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT+(sw_res*0.5)
     nrows = meta.REFLECTIVE_LINES
     ncols = meta.REFLECTIVE_SAMPLES
     zone = meta.UTM_ZONE
@@ -163,8 +161,9 @@ def localPred(sceneID,th_res,s_row,s_col):
 
 def getSharpenedLST(sceneID):
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
-    ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT
-    uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT
+    sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
+    ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT-(sw_res*0.5)
+    uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT+(sw_res*0.5)
     xres = meta.GRID_CELL_SIZE_REFLECTIVE
     yres = meta.GRID_CELL_SIZE_REFLECTIVE   
     ls = GeoTIFF(os.path.join(landsatTemp,'%s_sr_band1.tif' % sceneID))
