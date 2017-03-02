@@ -216,6 +216,7 @@ def getSharpenedLST(sceneID):
     g = gdal.Open(fn)
     data = g.ReadAsArray()[1]
     ls.clone(tifFile,data)
+    
     # copy files to their proper places
     scenePath = os.path.join(landsatLST,sceneID[3:9])
     if not os.path.exists(scenePath):
