@@ -175,7 +175,7 @@ def getSharpenedLST(sceneID):
         th_res = 60
     else:
         th_res = 90
-    scale = (th_res/meta.GRID_CELL_SIZE_REFLECTIVE)
+    scale = int(th_res/meta.GRID_CELL_SIZE_REFLECTIVE)
     nrows = int(meta.REFLECTIVE_LINES/scale)
     ncols = int(meta.REFLECTIVE_SAMPLES/scale)
     #dmsfn = os.path.join(landsatTemp,"dms_0_0.inp")
