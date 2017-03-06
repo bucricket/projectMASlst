@@ -175,8 +175,9 @@ def getSharpenedLST(sceneID):
         th_res = 60
     else:
         th_res = 90
-    nrows = int(meta.REFLECTIVE_LINES/(th_res/meta.GRID_CELL_SIZE_REFLECTIVE))
-    ncols = int(meta.REFLECTIVE_SAMPLES/(th_res/meta.GRID_CELL_SIZE_REFLECTIVE))
+    scale = (th_res/meta.GRID_CELL_SIZE_REFLECTIVE)
+    nrows = int(meta.REFLECTIVE_LINES/scale)
+    ncols = int(meta.REFLECTIVE_SAMPLES/scale)
     #dmsfn = os.path.join(landsatTemp,"dms_0_0.inp")
     dmsfn = "dms.inp"
     # create dms.inp
@@ -204,7 +205,7 @@ def getSharpenedLST(sceneID):
             fn = os.path.join(landsatTemp,"%s.local_sharpened_%d_%d.bin" %(sceneID,s_row,s_col))
             if os.path.exists(fn):
                 Lg = gdal.Open(fn)
-                globalData[0,s_row*3:s_row*3+wsize*3+1,s_col*3:s_col*3+wsize*3+1] = Lg.ReadAsArray(s_col*3,s_row*3,wsize*3+1,wsize*3+1)[0]
+                globalData[0,s_row*scale:s_row*scale+wsize*scale+1,s_col*scale:s_col*scale+wsize*scale+1] = Lg.ReadAsArray(s_col*scale,s_row*scale,wsize*scale+1,wsize*scale+1)[0]
     writeArray2Envi(globalData,ulx,uly,xres,yres,ls.proj4,finalFile)
       
     #subprocess.call(["gdal_merge.py", "-o", "%s" % finalFile , "%s" % os.path.join(landsatTemp,'%s.local*' % sceneID)])
