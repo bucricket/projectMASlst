@@ -184,9 +184,9 @@ def getSharpenedLST(sceneID):
     print("========GLOBAL PREDICTION===========")
     finalDMSinp(sceneID,"global")  
     # do global prediction
-    subprocess.call(["get_samples","%s" % dmsfn])
+    subprocess.call(["get_samples","./%s" % dmsfn])
     subprocess.call(["cubist","-f", "th_samples","-u","-r","30"])
-    subprocess.call(["predict_fineT","%s" % dmsfn])
+    subprocess.call(["predict_fineT","./%s" % dmsfn])
     # do local prediction
     print("========LOCAL PREDICTION===========")
     njobs = -1
