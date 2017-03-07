@@ -152,7 +152,7 @@ def localPred(sceneID,th_res,s_row,s_col):
     oe_col = e_col + overlap
     perpareDMSinp(sceneID,s_row,s_col,"local","bin")
     #dmsfn = os.path.join(landsatTemp,"dms_%d_%d.inp" % (s_row,s_col))
-    dmsfn = "dms_%d_%d.inp" % (s_row,s_col)
+    dmsfn = "./dms_%d_%d.inp" % (s_row,s_col)
     # do cubist prediction
     subprocess.call(["get_samples","%s" % dmsfn,"%d" % os_row,"%d" % os_col,
     "%d" % oe_row,"%d" % oe_col])
@@ -179,14 +179,14 @@ def getSharpenedLST(sceneID):
     nrows = int(meta.REFLECTIVE_LINES/scale)
     ncols = int(meta.REFLECTIVE_SAMPLES/scale)
     #dmsfn = os.path.join(landsatTemp,"dms_0_0.inp")
-    dmsfn = "dms.inp"
+    dmsfn = "./dms.inp"
     # create dms.inp
     print("========GLOBAL PREDICTION===========")
     finalDMSinp(sceneID,"global")  
     # do global prediction
-    subprocess.call(["get_samples","./%s" % dmsfn])
+    subprocess.call(["get_samples","%s" % dmsfn])
     subprocess.call(["cubist","-f", "th_samples","-u","-r","30"])
-    subprocess.call(["predict_fineT","./%s" % dmsfn])
+    subprocess.call(["predict_fineT","%s" % dmsfn])
     # do local prediction
     print("========LOCAL PREDICTION===========")
     njobs = -1
