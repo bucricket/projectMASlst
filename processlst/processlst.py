@@ -208,7 +208,7 @@ def main():
         
             
         subprocess.call(["gdal_translate","-of", "ENVI", "%s" % tifFile, "%s" % binFile])
-        subprocess.call(["GeoTiff2ENVI","%s" % tifFile, "%s" % binFile])
+        #subprocess.call(["GeoTiff2ENVI","%s" % tifFile, "%s" % binFile])
     #=====sharpen the corrected LST==========================================
     #subprocess.call(["lndlst_dms3_sa.csh","%s" % landsatTemp])
     landsat = Landsat(inFN,username = earthLoginUser,
