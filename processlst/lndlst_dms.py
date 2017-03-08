@@ -105,7 +105,7 @@ def finalDMSinp(sceneID,ext):
     file.write("# input file for Data Mining Sharpener\n")
     file.write("NFILES = 6\n")
     file.write("SW_FILE_NAME = %s %s %s %s %s %s\n" % (bands[0],bands[1],bands[2],bands[3],bands[4],bands[5]))
-    file.write("SW_CLOUD_MASK = %s\n" % cloud)
+    file.write("SW_CLOUD_MASK = %s\n" % cloud[0])
     file.write("SW_FILE_TYPE = binary\n")
     file.write("SW_CLOUD_TYPE = binary\n")
     file.write("SW_NROWS = %d\n" % nrows)
