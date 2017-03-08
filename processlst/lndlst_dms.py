@@ -179,7 +179,7 @@ def getSharpenedLST(sceneID):
     nrows = int(meta.REFLECTIVE_LINES/scale)
     ncols = int(meta.REFLECTIVE_SAMPLES/scale)
     #dmsfn = os.path.join(landsatTemp,"dms_0_0.inp")
-    dmsfn = "./dms.inp"
+    dmsfn = "dms.inp"
     # create dms.inp
     print("========GLOBAL PREDICTION===========")
     finalDMSinp(sceneID,"global")  
