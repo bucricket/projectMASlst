@@ -81,7 +81,8 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     file.close()
 
 def finalDMSinp(sceneID,ext):
-    bands = glob.glob(os.path.join(landsatTemp,"*.dat"))
+    bands = glob.glob(os.path.join(landsatTemp,"%s_sr*.dat" % sceneID))
+    cloud = glob.glob(os.path.join(landsatTemp,"%s_cfmask*.dat" % sceneID))
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
     ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT-(sw_res*0.5)
@@ -103,8 +104,8 @@ def finalDMSinp(sceneID,ext):
     file = open(fn, "w")
     file.write("# input file for Data Mining Sharpener\n")
     file.write("NFILES = 6\n")
-    file.write("SW_FILE_NAME = %s %s %s %s %s %s\n" % (bands[1],bands[2],bands[3],bands[4],bands[5],bands[6]))
-    file.write("SW_CLOUD_MASK = %s\n" % bands[0])
+    file.write("SW_FILE_NAME = %s %s %s %s %s %s\n" % (bands[0],bands[1],bands[2],bands[3],bands[4],bands[5]))
+    file.write("SW_CLOUD_MASK = %s\n" % cloud)
     file.write("SW_FILE_TYPE = binary\n")
     file.write("SW_CLOUD_TYPE = binary\n")
     file.write("SW_NROWS = %d\n" % nrows)
