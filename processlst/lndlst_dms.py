@@ -9,7 +9,6 @@ import os
 from osgeo import gdal
 from .utils import folders,writeArray2Envi,clean
 from .landsatTools import landsat_metadata, GeoTIFF
-import glob
 import subprocess
 from joblib import Parallel, delayed
 import shutil
@@ -23,7 +22,13 @@ landsatLST = Folders['landsatLST']
 
 
 def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
-    bands = glob.glob(os.path.join(landsatTemp,"*.dat"))
+    blue = os.path.join(landsatTemp,"%s_sr_band2.blue.dat" % sceneID)
+    green = os.path.join(landsatTemp,"%s_sr_band3.green.dat" % sceneID)
+    red = os.path.join(landsatTemp,"%s_sr_band4.red.dat" % sceneID)
+    nir = os.path.join(landsatTemp,"%s_sr_band5.nir.dat" % sceneID)
+    swir1 = os.path.join(landsatTemp,"%s_sr_band6.swir1.dat" % sceneID)
+    swir2 = os.path.join(landsatTemp,"%s_sr_band7.swir2.dat" % sceneID)
+    cloud = os.path.join(landsatTemp,"%s_cfmask.cloud.dat" % sceneID)
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
     ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT-(sw_res*0.5)
@@ -46,8 +51,8 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     file = open(fn, "w")
     file.write("# input file for Data Mining Sharpener\n")
     file.write("NFILES = 6\n")
-    file.write("SW_FILE_NAME = %s %s %s %s %s %s\n" % (bands[1],bands[2],bands[3],bands[4],bands[5],bands[6]))
-    file.write("SW_CLOUD_MASK = %s\n" % bands[0])
+    file.write("SW_FILE_NAME = %s %s %s %s %s %s\n" % (blue,green,red,nir,swir1,swir2))
+    file.write("SW_CLOUD_MASK = %s\n" % cloud)
     file.write("SW_FILE_TYPE = binary\n")
     file.write("SW_CLOUD_TYPE = binary\n")
     file.write("SW_NROWS = %d\n" % nrows)
@@ -81,8 +86,13 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     file.close()
 
 def finalDMSinp(sceneID,ext):
-    bands = glob.glob(os.path.join(landsatTemp,"%s_sr*.dat" % sceneID))
-    cloud = glob.glob(os.path.join(landsatTemp,"%s_cfmask*.dat" % sceneID))
+    blue = os.path.join(landsatTemp,"%s_sr_band2.blue.dat" % sceneID)
+    green = os.path.join(landsatTemp,"%s_sr_band3.green.dat" % sceneID)
+    red = os.path.join(landsatTemp,"%s_sr_band4.red.dat" % sceneID)
+    nir = os.path.join(landsatTemp,"%s_sr_band5.nir.dat" % sceneID)
+    swir1 = os.path.join(landsatTemp,"%s_sr_band6.swir1.dat" % sceneID)
+    swir2 = os.path.join(landsatTemp,"%s_sr_band7.swir2.dat" % sceneID)
+    cloud = os.path.join(landsatTemp,"%s_cfmask.cloud.dat" % sceneID)
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
     ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT-(sw_res*0.5)
@@ -104,8 +114,8 @@ def finalDMSinp(sceneID,ext):
     file = open(fn, "w")
     file.write("# input file for Data Mining Sharpener\n")
     file.write("NFILES = 6\n")
-    file.write("SW_FILE_NAME = %s %s %s %s %s %s\n" % (bands[0],bands[1],bands[2],bands[3],bands[4],bands[5]))
-    file.write("SW_CLOUD_MASK = %s\n" % cloud[0])
+    file.write("SW_FILE_NAME = %s %s %s %s %s %s\n" % (blue,green,red,nir,swir1,swir2))
+    file.write("SW_CLOUD_MASK = %s\n" % cloud)
     file.write("SW_FILE_TYPE = binary\n")
     file.write("SW_CLOUD_TYPE = binary\n")
     file.write("SW_NROWS = %d\n" % nrows)
