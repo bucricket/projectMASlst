@@ -209,11 +209,11 @@ def main():
             
         subprocess.call(["gdal_translate","-of", "ENVI", "%s" % tifFile, "%s" % binFile])
         #subprocess.call(["GeoTiff2ENVI","%s" % tifFile, "%s" % binFile])
-    #=====sharpen the corrected LST==========================================
-    #subprocess.call(["lndlst_dms3_sa.csh","%s" % landsatTemp])
-    landsat = Landsat(inFN,username = earthLoginUser,
-                          password = earthLoginPass)
-    getSharpenedLST(landsat.sceneID)
+        #=====sharpen the corrected LST==========================================
+        #subprocess.call(["lndlst_dms3_sa.csh","%s" % landsatTemp])
+        landsat = Landsat(inFN,username = earthLoginUser,
+                              password = earthLoginPass)
+        getSharpenedLST(landsat.sceneID)
     
     #=====move files to their respective directories and remove temp
     for i in xrange(len(sceneIDlist)):
