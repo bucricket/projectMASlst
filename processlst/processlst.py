@@ -66,8 +66,8 @@ def runRTTOV(profileDict):
     condaPath = out[0][:-1]
     s = pyrttov.__file__
     envPath = os.sep.join(s.split(os.sep)[:-6])
-    rttovPath = os.path.join(condaPath,'share','rttov113')
-    rttovCoefPath = os.path.join(envPath,'share','rttov')
+    #rttovPath = os.path.join(condaPath,'share','rttov113')
+    rttovPath = os.path.join(envPath,'share','rttov')
     rttovEmisPath = os.path.join(rttovPath,'emis_data')
     rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
     if not os.path.exists(rttovEmisPath):
@@ -107,7 +107,7 @@ def runRTTOV(profileDict):
 #        os.chdir(base)
         
     
-    tirsRttov.FileCoef = '{}/{}'.format(rttovCoefPath,"rtcoef_landsat_8_tirs.dat")
+    tirsRttov.FileCoef = '{}/{}'.format(rttovPath,"rtcoef_landsat_8_tirs.dat")
     
     #tirsRttov.EmisAtlasPath = os.path.join(base,'ALEXIdisALEXIfusion','rttov113','emis_data')
     tirsRttov.EmisAtlasPath = '{}/{}'.format(rttovPath, "emis_data")
