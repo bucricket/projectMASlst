@@ -359,6 +359,7 @@ class Landsat:
         resampName = os.path.join(self.landsatEmissivityBase,'%s_EMIS.tiff' % self.sceneID)
         command = "gdalwarp -overwrite -s_srs '%s' -t_srs '%s' -r bilinear -tr 30 30 -te %f %f %f %f -of GTiff %s %s" % (self.inProj4,self.proj4,self.ulx,self.lry,self.lrx,self.uly, mosaicTempFN,resampName)
         out = subprocess.check_output(command, shell=True)
+        print(out)
         print 'done processing ASTER'
         shutil.rmtree(self.ASTERmosaicTemp)
         os.makedirs(self.ASTERmosaicTemp)
