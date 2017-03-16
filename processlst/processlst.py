@@ -18,8 +18,9 @@ import pycurl
 import keyring
 import getpass
 import wget
+import ftplib
 from .processData import Landsat,RTTOV
-from .utils import folders,untar,download_file
+from .utils import folders,untar,getFile
 from .lndlst_dms import getSharpenedLST
 
 
@@ -68,70 +69,78 @@ def runRTTOV(profileDict):
     s = pyrttov.__file__
     envPath = os.sep.join(s.split(os.sep)[:-6])
     #rttovPath = os.path.join(condaPath,'share','rttov113')
-    rttovPath = os.path.join(envPath,'share','rttov')
-    rttovEmisPath = os.path.join(rttovPath,'emis_data')
-    rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
-    base = os.getcwd()
+    rttovPath = os.path.join(envPath,'share')
+    rttovEmisPath = os.path.join(rttovPath,'rttov','emis_data')
+#    rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
+#    base = os.getcwd()
     if not os.path.exists(rttovEmisPath):
+        ftp = ftplib.FTP("ftp.star.nesdis.noaa.gov")
+        ftp.login("anonymous", "")
+         
+        ftp.cwd('/pub/smcd/emb/mschull/')         # change directory to /pub/
+        getFile(ftp,'rttov.tar')
+         
+        ftp.quit()
+        untar('rttov.tar',rttovPath)
 #        print(" go to https://nwpsaf.eu/site/software/rttov/download/#Emissivity_BRDF_atlas_data")
 #        print(" download and untar the emissivity and brdf data into %s" % rttovPath )
 #        print(" Then run the script again")
-        os.makedirs(rttovEmisPath)
-        os.makedirs(rttovBRDFPath) 
-#        sys.exit()
-        #======download, untar and move atlases and coefficients=======================
-        url ='https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_hdf5.tar'
-        download_file(url)
-#        attempts =0
-#        while attempts < 10:
-#            try:
-#                wget.download('https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_hdf5.tar')
-#                break
-#            except :
-#                attempts += 1
-        untar('uw_ir_emis_atlas_hdf5.tar',rttovEmisPath)
-#        source = os.listdir(base)
-#        for files in source:
-#            if files.endswith('.H5'):
-#                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
-        url = 'https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_covariances_hdf5.tar'     
-        download_file(url)
-#        attempts =0
-#        while attempts < 5:
-#            try:        
-#                wget.download('https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_covariances_hdf5.tar')
-#                break
-#            except :
-#                attempts += 1
-        untar('uw_ir_emis_atlas_covariances_hdf5.tar',rttovEmisPath)
-#        source = os.listdir(base)
-#        for files in source:
-#            if files.endswith('.H5'):
-#                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
-                
-#        wget.download('https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_angcorr_hdf5.tar')
-        url = 'https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_angcorr_hdf5.tar'
-        download_file(url)
-        untar('uw_ir_emis_atlas_angcorr_hdf5.tar',rttovEmisPath)
-#        source = os.listdir(base)
-#        for files in source:
-#            if files.endswith('.H5'):
-#                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
-        #=========BRDF=================================================================
-        url = 'https://nwpsaf.eu/site/download/rttov_downloads/brdf_data/cms_brdf_atlas_hdf5.tar'
-        download_file(url)
-#        attempts =0
-#        while attempts < 5:
-#            try:     
-#                wget.download('https://nwpsaf.eu/site/download/rttov_downloads/brdf_data/cms_brdf_atlas_hdf5.tar')
-#                break
-#            except :
-#                attempts += 1
-        untar('cms_brdf_atlas_hdf5.tar',rttovBRDFPath)
-#        source = os.listdir(base)
-#        for files in source:
-#            if files.endswith('.H5'):
-#                shutil.move(os.path.join(base,files), os.path.join(rttovBRDFPath,files))
+#        os.makedirs(rttovEmisPath)
+#        os.makedirs(rttovBRDFPath) 
+##        sys.exit()
+#        #======download, untar and move atlases and coefficients=======================
+#        url ='https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_hdf5.tar'
+#        download_file(url)
+##        attempts =0
+##        while attempts < 10:
+##            try:
+##                wget.download('https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_hdf5.tar')
+##                break
+##            except :
+##                attempts += 1
+#        untar('uw_ir_emis_atlas_hdf5.tar',rttovEmisPath)
+##        source = os.listdir(base)
+##        for files in source:
+##            if files.endswith('.H5'):
+##                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
+#        url = 'https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_covariances_hdf5.tar'     
+#        download_file(url)
+##        attempts =0
+##        while attempts < 5:
+##            try:        
+##                wget.download('https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_covariances_hdf5.tar')
+##                break
+##            except :
+##                attempts += 1
+#        untar('uw_ir_emis_atlas_covariances_hdf5.tar',rttovEmisPath)
+##        source = os.listdir(base)
+##        for files in source:
+##            if files.endswith('.H5'):
+##                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
+#                
+##        wget.download('https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_angcorr_hdf5.tar')
+#        url = 'https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_angcorr_hdf5.tar'
+#        download_file(url)
+#        untar('uw_ir_emis_atlas_angcorr_hdf5.tar',rttovEmisPath)
+##        source = os.listdir(base)
+##        for files in source:
+##            if files.endswith('.H5'):
+##                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
+#        #=========BRDF=================================================================
+#        url = 'https://nwpsaf.eu/site/download/rttov_downloads/brdf_data/cms_brdf_atlas_hdf5.tar'
+#        download_file(url)
+##        attempts =0
+##        while attempts < 5:
+##            try:     
+##                wget.download('https://nwpsaf.eu/site/download/rttov_downloads/brdf_data/cms_brdf_atlas_hdf5.tar')
+##                break
+##            except :
+##                attempts += 1
+#        untar('cms_brdf_atlas_hdf5.tar',rttovBRDFPath)
+##        source = os.listdir(base)
+##        for files in source:
+##            if files.endswith('.H5'):
+##                shutil.move(os.path.join(base,files), os.path.join(rttovBRDFPath,files))
             
     tirsRttov.FileCoef = '{}/{}'.format(rttovPath,"rtcoef_landsat_8_tirs.dat")
     
