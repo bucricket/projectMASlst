@@ -70,6 +70,7 @@ def runRTTOV(profileDict):
     envPath = os.sep.join(s.split(os.sep)[:-6])
     #rttovPath = os.path.join(condaPath,'share','rttov113')
     rttovPath = os.path.join(envPath,'share')
+    rttovCoeffPath = os.path.join(rttovPath,'rttov')
     rttovAtlasPath = os.path.join(rttovPath,'rttov_atlas')
 #    rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
 #    base = os.getcwd()
@@ -142,7 +143,7 @@ def runRTTOV(profileDict):
 ##            if files.endswith('.H5'):
 ##                shutil.move(os.path.join(base,files), os.path.join(rttovBRDFPath,files))
             
-    tirsRttov.FileCoef = '{}/{}'.format(rttovPath,"rtcoef_landsat_8_tirs.dat")
+    tirsRttov.FileCoef = '{}/{}'.format(rttovCoeffPath,"rtcoef_landsat_8_tirs.dat")
     
     #tirsRttov.EmisAtlasPath = os.path.join(base,'ALEXIdisALEXIfusion','rttov113','emis_data')
     tirsRttov.EmisAtlasPath = '{}/{}'.format(rttovAtlasPath, "emis_data")
