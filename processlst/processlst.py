@@ -76,8 +76,8 @@ def runRTTOV(profileDict):
 #        print(" go to https://nwpsaf.eu/site/software/rttov/download/#Emissivity_BRDF_atlas_data")
 #        print(" download and untar the emissivity and brdf data into %s" % rttovPath )
 #        print(" Then run the script again")
-#        os.makedirs(rttovEmisPath)
-#        os.makedirs(rttovBRDFPath) 
+        os.makedirs(rttovEmisPath)
+        os.makedirs(rttovBRDFPath) 
 #        sys.exit()
         #======download, untar and move atlases and coefficients=======================
         attempts =0
