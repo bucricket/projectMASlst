@@ -70,18 +70,18 @@ def runRTTOV(profileDict):
     envPath = os.sep.join(s.split(os.sep)[:-6])
     #rttovPath = os.path.join(condaPath,'share','rttov113')
     rttovPath = os.path.join(envPath,'share')
-    rttovEmisPath = os.path.join(rttovPath,'rttov','emis_data')
+    rttovAtlasPath = os.path.join(rttovPath,'rttov_atlas')
 #    rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
 #    base = os.getcwd()
-    if not os.path.exists(rttovEmisPath):
+    if not os.path.exists(rttovAtlasPath):
         ftp = ftplib.FTP("ftp.star.nesdis.noaa.gov")
         ftp.login("anonymous", "")
          
         ftp.cwd('/pub/smcd/emb/mschull/')         # change directory to /pub/
-        getFile(ftp,'rttov.tar')
+        getFile(ftp,'rttov_atlas.tar')
          
         ftp.quit()
-        untar('rttov.tar',rttovPath)
+        untar('rttov_atlas.tar',rttovPath)
 #        print(" go to https://nwpsaf.eu/site/software/rttov/download/#Emissivity_BRDF_atlas_data")
 #        print(" download and untar the emissivity and brdf data into %s" % rttovPath )
 #        print(" Then run the script again")
@@ -145,9 +145,9 @@ def runRTTOV(profileDict):
     tirsRttov.FileCoef = '{}/{}'.format(rttovPath,"rtcoef_landsat_8_tirs.dat")
     
     #tirsRttov.EmisAtlasPath = os.path.join(base,'ALEXIdisALEXIfusion','rttov113','emis_data')
-    tirsRttov.EmisAtlasPath = '{}/{}'.format(rttovPath, "emis_data")
+    tirsRttov.EmisAtlasPath = '{}/{}'.format(rttovAtlasPath, "emis_data")
     print "%s" % tirsRttov.EmisAtlasPath
-    tirsRttov.BrdfAtlasPath = '{}/{}'.format(rttovPath, "brdf_data")
+    tirsRttov.BrdfAtlasPath = '{}/{}'.format(rttovAtlasPath, "brdf_data")
     #tirsRttov.BrdfAtlasPath = os.path.join(base,'ALEXIdisALEXIfusion','rttov113','brdf_data')
 
     tirsRttov.Options.AddInterp = True
