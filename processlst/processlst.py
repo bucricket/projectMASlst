@@ -87,11 +87,11 @@ def runRTTOV(profileDict):
                 break
             except :
                 attempts += 1
-        untar('uw_ir_emis_atlas_hdf5.tar',base)
-        source = os.listdir(base)
-        for files in source:
-            if files.endswith('.H5'):
-                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
+        untar('uw_ir_emis_atlas_hdf5.tar',rttovEmisPath)
+#        source = os.listdir(base)
+#        for files in source:
+#            if files.endswith('.H5'):
+#                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
                 
         attempts =0
         while attempts < 5:
