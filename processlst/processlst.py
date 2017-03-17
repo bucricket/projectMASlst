@@ -11,13 +11,10 @@ import glob
 import subprocess
 import sys
 import pyrttov
-import shutil
-import urllib
 import argparse
 import pycurl
 import keyring
 import getpass
-import wget
 import ftplib
 from .processData import Landsat,RTTOV
 from .utils import folders,untar,getFile
