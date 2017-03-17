@@ -44,7 +44,7 @@ def runRTTOV(profileDict):
     # Create Rttov object for the TIRS instrument
 
     tirsRttov = pyrttov.Rttov()
-    nchan_tirs = 1
+#    nchan_tirs = 1
 
     # Set the options for each Rttov instance:
     # - the path to the coefficient file must always be specified
@@ -60,9 +60,6 @@ def runRTTOV(profileDict):
     #   the SEVIRI and MHS simulations)
     # - enable the store_trans wrapper option for MHS to provide access to
     #   RTTOV transmission structure
-    p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
-    out = p.communicate()
-    condaPath = out[0][:-1]
     s = pyrttov.__file__
     envPath = os.sep.join(s.split(os.sep)[:-6])
     rttovPath = os.path.join(envPath,'share')
@@ -153,7 +150,6 @@ def main():
 
     base = os.getcwd()    
     Folders = folders(base)    
-    landsatLST = Folders['landsatLST']
     landsatTemp = Folders['landsatTemp']   
     landsatDataBase = Folders['landsatDataBase'] 
     sceneIDlist = glob.glob(os.path.join(landsatTemp,'*.xml'))
@@ -168,7 +164,6 @@ def main():
                           password = earthLoginPass)
         rttov = RTTOV(inFN,username = earthLoginUser,
                           password = earthLoginPass)
-        lstFolder = os.path.join(landsatLST,landsat.scene)
         tifFile = os.path.join(landsatTemp,'%s_lst.tiff'% landsat.sceneID)
         binFile = os.path.join(landsatTemp,"lndsr."+landsat.sceneID+".cband6.bin")
         if not os.path.exists(tifFile):
