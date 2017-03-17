@@ -71,10 +71,11 @@ def runRTTOV(profileDict):
     #rttovPath = os.path.join(condaPath,'share','rttov113')
     rttovPath = os.path.join(envPath,'share')
     rttovCoeffPath = os.path.join(rttovPath,'rttov')
-    rttovAtlasPath = os.path.join(rttovPath,'rttov_atlas')
-#    rttovBRDFPath = os.path.join(rttovPath,'brdf_data')
+    rttovEmisPath = os.path.join(rttovCoeffPath,'emis_data')
+    rttovBRDFPath = os.path.join(rttovCoeffPath,'brdf_data')
 #    base = os.getcwd()
-    if not os.path.exists(rttovAtlasPath):
+    if not os.path.exists(rttovBRDFPath):
+        print("downloading atlases.....")
         ftp = ftplib.FTP("ftp.star.nesdis.noaa.gov")
         ftp.login("anonymous", "")
          
@@ -146,9 +147,12 @@ def runRTTOV(profileDict):
     tirsRttov.FileCoef = '{}/{}'.format(rttovCoeffPath,"rtcoef_landsat_8_tirs.dat")
     
     #tirsRttov.EmisAtlasPath = os.path.join(base,'ALEXIdisALEXIfusion','rttov113','emis_data')
-    tirsRttov.EmisAtlasPath = '{}/{}'.format(rttovAtlasPath, "emis_data")
+    #tirsRttov.EmisAtlasPath = '{}/{}'.format(rttovAtlasPath, "emis_data")
+    tirsRttov.EmisAtlasPath = rttovEmisPath 
+    
     print "%s" % tirsRttov.EmisAtlasPath
-    tirsRttov.BrdfAtlasPath = '{}/{}'.format(rttovAtlasPath, "brdf_data")
+    #tirsRttov.BrdfAtlasPath = '{}/{}'.format(rttovAtlasPath, "brdf_data")
+    tirsRttov.BrdfAtlasPath = rttovBRDFPath 
     #tirsRttov.BrdfAtlasPath = os.path.join(base,'ALEXIdisALEXIfusion','rttov113','brdf_data')
 
     tirsRttov.Options.AddInterp = True
