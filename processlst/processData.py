@@ -361,8 +361,8 @@ class Landsat:
         out = subprocess.check_output(command, shell=True)
         print(out)
         print 'done processing ASTER'
-        shutil.rmtree(self.ASTERmosaicTemp)
-        os.makedirs(self.ASTERmosaicTemp)
+#        shutil.rmtree(self.ASTERmosaicTemp)
+#        os.makedirs(self.ASTERmosaicTemp)
         return resampName
     
  
