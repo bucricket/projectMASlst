@@ -68,12 +68,10 @@ def runRTTOV(profileDict):
     condaPath = out[0][:-1]
     s = pyrttov.__file__
     envPath = os.sep.join(s.split(os.sep)[:-6])
-    #rttovPath = os.path.join(condaPath,'share','rttov113')
     rttovPath = os.path.join(envPath,'share')
     rttovCoeffPath = os.path.join(rttovPath,'rttov')
     rttovEmisPath = os.path.join(rttovCoeffPath,'emis_data')
     rttovBRDFPath = os.path.join(rttovCoeffPath,'brdf_data')
-#    base = os.getcwd()
     if not os.path.exists(rttovBRDFPath):
         print("downloading atlases.....")
         ftp = ftplib.FTP("ftp.star.nesdis.noaa.gov")
@@ -84,76 +82,12 @@ def runRTTOV(profileDict):
          
         ftp.quit()
         untar('rttov_atlas.tar',rttovPath)
-#        print(" go to https://nwpsaf.eu/site/software/rttov/download/#Emissivity_BRDF_atlas_data")
-#        print(" download and untar the emissivity and brdf data into %s" % rttovPath )
-#        print(" Then run the script again")
-#        os.makedirs(rttovEmisPath)
-#        os.makedirs(rttovBRDFPath) 
-##        sys.exit()
-#        #======download, untar and move atlases and coefficients=======================
-#        url ='https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_hdf5.tar'
-#        download_file(url)
-##        attempts =0
-##        while attempts < 10:
-##            try:
-##                wget.download('https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_hdf5.tar')
-##                break
-##            except :
-##                attempts += 1
-#        untar('uw_ir_emis_atlas_hdf5.tar',rttovEmisPath)
-##        source = os.listdir(base)
-##        for files in source:
-##            if files.endswith('.H5'):
-##                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
-#        url = 'https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_covariances_hdf5.tar'     
-#        download_file(url)
-##        attempts =0
-##        while attempts < 5:
-##            try:        
-##                wget.download('https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_covariances_hdf5.tar')
-##                break
-##            except :
-##                attempts += 1
-#        untar('uw_ir_emis_atlas_covariances_hdf5.tar',rttovEmisPath)
-##        source = os.listdir(base)
-##        for files in source:
-##            if files.endswith('.H5'):
-##                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
-#                
-##        wget.download('https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_angcorr_hdf5.tar')
-#        url = 'https://nwpsaf.eu/downloads/emis_data/uw_ir_emis_atlas_angcorr_hdf5.tar'
-#        download_file(url)
-#        untar('uw_ir_emis_atlas_angcorr_hdf5.tar',rttovEmisPath)
-##        source = os.listdir(base)
-##        for files in source:
-##            if files.endswith('.H5'):
-##                shutil.move(os.path.join(base,files), os.path.join(rttovEmisPath,files))
-#        #=========BRDF=================================================================
-#        url = 'https://nwpsaf.eu/site/download/rttov_downloads/brdf_data/cms_brdf_atlas_hdf5.tar'
-#        download_file(url)
-##        attempts =0
-##        while attempts < 5:
-##            try:     
-##                wget.download('https://nwpsaf.eu/site/download/rttov_downloads/brdf_data/cms_brdf_atlas_hdf5.tar')
-##                break
-##            except :
-##                attempts += 1
-#        untar('cms_brdf_atlas_hdf5.tar',rttovBRDFPath)
-##        source = os.listdir(base)
-##        for files in source:
-##            if files.endswith('.H5'):
-##                shutil.move(os.path.join(base,files), os.path.join(rttovBRDFPath,files))
+
             
     tirsRttov.FileCoef = '{}/{}'.format(rttovCoeffPath,"rtcoef_landsat_8_tirs.dat")
-    
-    #tirsRttov.EmisAtlasPath = os.path.join(base,'ALEXIdisALEXIfusion','rttov113','emis_data')
-    #tirsRttov.EmisAtlasPath = '{}/{}'.format(rttovAtlasPath, "emis_data")
     tirsRttov.EmisAtlasPath = rttovEmisPath 
-    
-    print "%s" % tirsRttov.EmisAtlasPath
-    #tirsRttov.BrdfAtlasPath = '{}/{}'.format(rttovAtlasPath, "brdf_data")
     tirsRttov.BrdfAtlasPath = rttovBRDFPath 
-    #tirsRttov.BrdfAtlasPath = os.path.join(base,'ALEXIdisALEXIfusion','rttov113','brdf_data')
+
 
     tirsRttov.Options.AddInterp = True
     tirsRttov.Options.StoreTrans = True
