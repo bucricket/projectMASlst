@@ -304,7 +304,7 @@ class Landsat:
     def processLandsatLST(self,tirsRttov,merraDict):
         
         # Landsat brightness temperature
-        landsat = os.path.join(self.landsatTemp,"%s_toa_band10.tif" % self.sceneID)
+        landsat = os.path.join(self.landsatTemp,"%s_bt_band10.tif" % self.sceneID)
         Lg = gdal.Open(landsat)
         BT= Lg.ReadAsArray()/10.
         #=====get radiance from BT=========
