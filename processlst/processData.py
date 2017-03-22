@@ -265,8 +265,8 @@ class Landsat:
         lonRange = range(int(np.floor(self.ulLon)),int(np.ceil(self.lrLon))+1)
         for i in range(len(latRange)):
             for j in range(len(lonRange)):
-                latString = ["{1:0{0}d}".format(2 if latRange[i]>=0 else 3,latRange[i])]
-                lonString = ["{1:0{0}d}".format(3 if lonRange[j]>=0 else 4,lonRange[j])]
+                latString = "{1:0{0}d}".format(2 if latRange[i]>=0 else 3,latRange[i])
+                lonString = "{1:0{0}d}".format(3 if lonRange[j]>=0 else 4,lonRange[j])
                 asterFN = 'AG100.v003.%s.%s.0001.h5' % (latString,lonString)
                 # ASTER Emissivity product AG100 comes in 1 x 1 degree tiles where UL is given in the filename.
                 ASTERurl = os.path.join(ASTERurlBase,asterFN)
