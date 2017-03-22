@@ -265,7 +265,9 @@ class Landsat:
         lonRange = range(int(np.floor(self.ulLon)),int(np.ceil(self.lrLon))+1)
         for i in range(len(latRange)):
             for j in range(len(lonRange)):
-                asterFN = 'AG100.v003.%02d.%04d.0001.h5' % (latRange[i],lonRange[j])
+                latString = ["{1:0{0}d}".format(2 if latRange[i]>=0 else 3,latRange[i])]
+                lonString = ["{1:0{0}d}".format(3 if lonRange[j]>=0 else 4,lonRange[j])]
+                asterFN = 'AG100.v003.%s.%s.0001.h5' % (latString,lonString)
                 # ASTER Emissivity product AG100 comes in 1 x 1 degree tiles where UL is given in the filename.
                 ASTERurl = os.path.join(ASTERurlBase,asterFN)
                 print ASTERurl
@@ -284,7 +286,7 @@ class Landsat:
                 EmisBand4 = np.array(fh5["/Emissivity/Mean/"])[3]/1000.
                 lats = np.array(fh5["/Geolocation/Latitude/"])
                 lons = np.array(fh5["/Geolocation/Longitude/"])
-                tempName = os.path.join(self.ASTERmosaicTemp,'emis%02d%04d.tiff'% (latRange[i],lonRange[j]))
+                tempName = os.path.join(self.ASTERmosaicTemp,'emis%s%s.tiff'% (latString,lonString))
                 writeArray2Tiff(EmisBand4,lats[:,0],lons[0,:],tempName)
        
         #mosaic ,reproject and save as geotiff
