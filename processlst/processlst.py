@@ -77,8 +77,8 @@ def runRTTOV(profileDict):
         ftp.quit()
         untar('rttov_atlas.tar',rttovPath)
 
-    subprocess.check_output("chmod 755 %s*.H5" % rttovEmisPath, shell=True)   
-    subprocess.check_output("chmod 755 %s*.H5" % rttovBRDFPath, shell=True)  
+    subprocess.check_output("chmod 755 %s%s*.H5" % (rttovEmisPath,os.sep), shell=True)   
+    subprocess.check_output("chmod 755 %s%s*.H5" % (rttovBRDFPath,os.sep), shell=True)  
     tirsRttov.FileCoef = '{}/{}'.format(rttovCoeffPath,"rtcoef_landsat_8_tirs.dat")
     tirsRttov.EmisAtlasPath = rttovEmisPath 
     tirsRttov.BrdfAtlasPath = rttovBRDFPath 
