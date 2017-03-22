@@ -276,6 +276,7 @@ class Landsat:
                     try:
                         getHTTPdata(ASTERurl,localAsterFN,(self.earthLoginUser,self.earthLoginPass))
                     except Exception:
+                        print("failed to get the file")
                         continue          
             #open HDF file, extract the desired dataset and save to GTiff
                 
