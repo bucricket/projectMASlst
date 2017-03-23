@@ -87,9 +87,12 @@ def writeArray2Envi(data,ulx,uly,xres,yres,Projection,outfile):
     
     gt = [ulx, xres, 0, uly, 0, yres ]
     ds.SetGeoTransform(gt)
- 
-    for band in range(nbands):
-        ds.GetRasterBand(band+1).WriteArray( data[band,:,:] )
+    
+    if nbands>1:
+        for band in range(nbands):
+            ds.GetRasterBand(band+1).WriteArray( data[band,:,:] )
+    else:
+        ds.GetRasterBand(1).WriteArray( data )
     ds = None
 
 
