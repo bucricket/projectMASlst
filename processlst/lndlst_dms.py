@@ -10,6 +10,7 @@ from osgeo import gdal
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 import pandas as pd
+from scipy.ndimage import zoom
 from .utils import folders,writeArray2Envi,clean
 from .landsatTools import landsat_metadata, GeoTIFF
 import subprocess
@@ -176,10 +177,13 @@ def localPred(sceneID,th_res,s_row,s_col):
     
 def globalPredSK(sceneID):
     base = os.getcwd()
-    regr_1 = DecisionTreeRegressor(max_depth=30)
+    regr_1 = DecisionTreeRegressor(max_depth=15)
     fn = os.path.join(base,'th_samples.data')
     df = pd.read_csv(fn)
     X = np.array(df.iloc[:,3:-4])
+    w  = np.array(df.iloc[:,-1])
+    w = np.reshape(w,[w.shape[0],1])
+    X  = np.concatenate((X, w), axis=1)
     y = np.array(df.iloc[:,-2])
     regr_1.fit(X,y)
     blue = os.path.join(landsatTemp,"%s_sr_band2.tif" % sceneID)
@@ -208,8 +212,33 @@ def globalPredSK(sceneID):
     Gswir2 = gdal.Open(swir2)
     swir2Data = Gswir2.ReadAsArray()
     swir2Vec = np.reshape(swir2Data,[swir2Data.shape[0]*swir2Data.shape[1]])
+    
+    ylocs = (np.tile(range(0,blueData.shape[0]),(blueData.shape[1],1)).T)/3
+    xlocs = (np.tile(range(0,blueData.shape[1]),(blueData.shape[0],1)))/3
+    pixID = ylocs*10000+xlocs
+    pixIDvec = np.reshape(pixID,[swir2Data.shape[0]*swir2Data.shape[1]])
+    newDF = pd.DataFrame({'pixID':pixIDvec,'green':greenVec,'red':redVec,
+                          'nir':nirVec,'swir1':swir1Vec,'swir2':swir2Vec})
+    #newDF.replace(to_replace=-9999,value=np.)
+    dnMean = newDF.groupby('pixID').mean()
+    cv = newDF.groupby('pixID').std()/dnMean
+    meanCV = np.array(cv.mean(axis=1))
+    meanCV[np.isinf(meanCV)]=10.
+    meanCV[np.where(meanCV==0)]=10.
+    weight = 0.1/meanCV
+    weight[np.isinf(weight)]=20.
+    weight[np.where(meanCV<0.01)]=10.
+    weight[weight==20.]=0.
+    weight[np.where(weight<0.)]=0.
 
-    xNew = np.stack((greenVec,redVec,nirVec,swir1Vec,swir2Vec), axis=-1)
+    rows = np.array(dnMean.index/10000)
+    cols = np.array(dnMean.index-((dnMean.index/10000)*10000))
+    w_array = np.nan * np.empty((greenData.shape[0]/3,greenData.shape[1]/3))    
+    w_array[list(rows), list(cols)] = list(weight)
+    w_array2 = zoom(w_array,3.)
+    weight = np.reshape(w_array2,[greenData.shape[0]*greenData.shape[1]])
+    newDF['weight']=weight
+    xNew = np.stack((greenVec,redVec,nirVec,swir1Vec,swir2Vec,weight), axis=-1)
     outData = regr_1.predict(xNew)
     
     return np.reshape(outData,[blueData.shape[0],blueData.shape[1]])
