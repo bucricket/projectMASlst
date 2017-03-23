@@ -66,9 +66,13 @@ def writeArray2Tiff(data,lats,lons,outfile):
     
 def writeArray2Envi(data,ulx,uly,xres,yres,Projection,outfile):
     #Projection = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
-    nbands = data.shape[0]
-    nrows = data.shape[1]
-    ncols = data.shape[2]
+    if len(data.shape)>2:
+        nbands = data.shape[0]
+        nrows = data.shape[1]
+        ncols = data.shape[2]
+    else:
+        nrows = data.shape[0]
+        ncols = data.shape[1]
     
     driver = gdal.GetDriverByName('ENVI')
     ds = driver.Create(outfile, ncols, nrows, nbands, gdal.GDT_Float32)
