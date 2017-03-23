@@ -179,7 +179,7 @@ def globalPredSK(sceneID):
     regr_1 = DecisionTreeRegressor(max_depth=30)
     fn = os.path.join(base,'th_samples.data')
     df = pd.read_csv(fn)
-    X = np.array(df.iloc[:,2:-4])
+    X = np.array(df.iloc[:,3:-4])
     y = np.array(df.iloc[:,-2])
     regr_1.fit(X,y)
     blue = os.path.join(landsatTemp,"%s_sr_band2.tif" % sceneID)
@@ -209,11 +209,36 @@ def globalPredSK(sceneID):
     swir2Data = Gswir2.ReadAsArray()
     swir2Vec = np.reshape(swir2Data,[swir2Data.shape[0]*swir2Data.shape[1]])
 
-    xNew = np.stack((blueVec,greenVec,redVec,nirVec,swir1Vec,swir2Vec), axis=-1)
+    xNew = np.stack((greenVec,redVec,nirVec,swir1Vec,swir2Vec), axis=-1)
     outData = regr_1.predict(xNew)
     
     return np.reshape(outData,[blueData.shape[0],blueData.shape[1]])
+
+def localPredSK(sceneID,th_res,s_row,s_col):
+
+    wsize1 = 200
+    overlap1 = 20
     
+    wsize = int((wsize1*120)/th_res)
+    overlap = int((overlap1*120)/th_res)
+    
+    e_row = s_row+wsize
+    e_col = s_col+wsize
+    os_row = s_row - overlap
+    os_col = s_col - overlap
+    oe_row = e_row +overlap
+    oe_col = e_col + overlap
+    perpareDMSinp(sceneID,s_row,s_col,"local","bin")
+    #dmsfn = os.path.join(landsatTemp,"dms_%d_%d.inp" % (s_row,s_col))
+    dmsfn = "dms_%d_%d.inp" % (s_row,s_col)
+    # do cubist prediction
+    subprocess.call(["get_samples","%s" % dmsfn,"%d" % os_row,"%d" % os_col,
+    "%d" % oe_row,"%d" % oe_col])
+    localPred = globalPredSK(sceneID)
+    subprocess.call(["cubist","-f", "th_samples_%d_%d" % (s_row,s_col),"-u","-r","15"])
+    subprocess.call(["predict_fineT","%s" % dmsfn,"%d" % s_row, "%d" % s_col, 
+    "%d" % e_row, "%d" % e_col])
+    return localPred
     
 def getSharpenedLST(sceneID):
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
