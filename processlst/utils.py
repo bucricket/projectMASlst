@@ -71,6 +71,7 @@ def writeArray2Envi(data,ulx,uly,xres,yres,Projection,outfile):
         nrows = data.shape[1]
         ncols = data.shape[2]
     else:
+        nbands = 1
         nrows = data.shape[0]
         ncols = data.shape[1]
     
