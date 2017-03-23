@@ -7,6 +7,9 @@ Created on Mon Feb 27 14:03:53 2017
 """
 import os
 from osgeo import gdal
+import numpy as np
+from sklearn.tree import DecisionTreeRegressor
+import pandas as pd
 from .utils import folders,writeArray2Envi,clean
 from .landsatTools import landsat_metadata, GeoTIFF
 import subprocess
@@ -170,7 +173,48 @@ def localPred(sceneID,th_res,s_row,s_col):
     subprocess.call(["cubist","-f", "th_samples_%d_%d" % (s_row,s_col),"-u","-r","15"])
     subprocess.call(["predict_fineT","%s" % dmsfn,"%d" % s_row, "%d" % s_col, 
     "%d" % e_row, "%d" % e_col])
+    
+def globalPredSK(sceneID):
+    base = os.getcwd()
+    regr_1 = DecisionTreeRegressor(max_depth=30)
+    fn = os.path.join(base,'th_samples.data')
+    df = pd.read_csv(fn)
+    X = np.array(df.iloc[:,:-2])
+    y = np.array(df.iloc[:,-2])
+    regr_1.fit(X,y)
+    blue = os.path.join(landsatTemp,"%s_sr_band2.tif" % sceneID)
+    green = os.path.join(landsatTemp,"%s_sr_band3.tif" % sceneID)
+    red = os.path.join(landsatTemp,"%s_sr_band4.tif" % sceneID)
+    nir = os.path.join(landsatTemp,"%s_sr_band5.tif" % sceneID)
+    swir1 = os.path.join(landsatTemp,"%s_sr_band6.tif" % sceneID)
+    swir2 = os.path.join(landsatTemp,"%s_sr_band7.tif" % sceneID)
+    # open files and assepble them into 2-d numpy array
+    
+    Gblue = gdal.Open(blue)
+    blueData = Gblue.ReadAsArray()
+    blueVec = np.reshape(blueData,[blueData.shape[0]*blueData.shape[1],1])
+    Ggreen = gdal.Open(green)
+    greenData = Ggreen.ReadAsArray()
+    greenVec = np.reshape(greenData,[greenData.shape[0]*greenData.shape[1],1])
+    Gnir = gdal.Open(nir)
+    nirData = Gnir.ReadAsArray()
+    nirVec = np.reshape(nirData,[nirData.shape[0]*nirData.shape[1],1])
+    Gred = gdal.Open(red)
+    redData = Gred.ReadAsArray()
+    redVec = np.reshape(redData,[redData.shape[0]*redData.shape[1],1])
+    Gswir1 = gdal.Open(swir1)
+    swir1Data = Gswir1.ReadAsArray()
+    swir1Vec = np.reshape(swir1Data,[swir1Data.shape[0]*swir1Data.shape[1],1])
+    Gswir2 = gdal.Open(swir2)
+    swir2Data = Gswir2.ReadAsArray()
+    swir2Vec = np.reshape(swir2Data,[swir2Data.shape[0]*swir2Data.shape[1],1])
 
+    xNew = np.stack((blueVec,greenVec,redVec,nirVec,swir1Vec,swir2Vec), axis=-1)
+    outData = regr_1.predict(xNew)
+    
+    return np.reshape(outData,[blueData.shape[0],blueData.shape[1]])
+    
+    
 def getSharpenedLST(sceneID):
     meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
