@@ -9,6 +9,7 @@ import os
 from osgeo import gdal
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import AdaBoostRegressor
 import pandas as pd
 from scipy.ndimage import zoom
 from .utils import folders,writeArray2Envi,clean
@@ -178,6 +179,9 @@ def localPred(sceneID,th_res,s_row,s_col):
 def globalPredSK(sceneID):
     base = os.getcwd()
     regr_1 = DecisionTreeRegressor(max_depth=15)
+    rng = np.random.RandomState(1)
+    regr_2 = AdaBoostRegressor(DecisionTreeRegressor(max_depth=15),
+                          n_estimators=5, random_state=rng)
     fn = os.path.join(base,'th_samples.data')
     df = pd.read_csv(fn)
     X = np.array(df.iloc[:,3:-4])
@@ -186,6 +190,7 @@ def globalPredSK(sceneID):
     X  = np.concatenate((X, w), axis=1)
     y = np.array(df.iloc[:,-2])
     regr_1.fit(X,y)
+    regr_2.fit(X,y)
     blue = os.path.join(landsatTemp,"%s_sr_band2.tif" % sceneID)
     green = os.path.join(landsatTemp,"%s_sr_band3.tif" % sceneID)
     red = os.path.join(landsatTemp,"%s_sr_band4.tif" % sceneID)
@@ -240,6 +245,7 @@ def globalPredSK(sceneID):
     newDF['weight']=weight
     xNew = np.stack((greenVec,redVec,nirVec,swir1Vec,swir2Vec,weight), axis=-1)
     outData = regr_1.predict(xNew)
+    outData = regr_2.predict(xNew)
     
     return np.reshape(outData,[blueData.shape[0],blueData.shape[1]])
 
@@ -294,12 +300,16 @@ def getSharpenedLST(sceneID):
     finalDMSinp(sceneID,"global")  
     # do global prediction
     subprocess.call(["get_samples","%s" % dmsfn])
-    #subprocess.call(["cubist","-f", "th_samples","-u","-r","30"])
-    #subprocess.call(["predict_fineT","%s" % dmsfn])
-    #===========EXPERIMENTAL===========
-    globFN = os.path.join(landsatTemp,"%s.sharpened_band6.global" % sceneID)
-    globalData = globalPredSK(sceneID)
-    writeArray2Envi(globalData,ulx,uly,xres,yres,ls.proj4,globFN)
+    
+    model = 'cubist'
+    if model == 'cubist':
+        subprocess.call(["cubist","-f", "th_samples","-u","-r","30"])
+        subprocess.call(["predict_fineT","%s" % dmsfn])
+    else:
+        #===========EXPERIMENTAL===========
+        globFN = os.path.join(landsatTemp,"%s.sharpened_band6.global" % sceneID)
+        globalData = globalPredSK(sceneID)
+        writeArray2Envi(globalData,ulx,uly,xres,yres,ls.proj4,globFN)
     # do local prediction
     print("========LOCAL PREDICTION===========")
     njobs = -1
