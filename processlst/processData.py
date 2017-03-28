@@ -312,7 +312,6 @@ class Landsat:
         BT= Lg.ReadAsArray()/10.
         #=====get radiance from BT=========
         ThermalRad = self.Kappa1/(np.exp(self.Kappa2/BT)-1)
-        print "L8 Size: %f,%f" % (ThermalRad.shape[0],ThermalRad.shape[1])
         Lg = None
     
         origShap = merraDict['origShape']
@@ -342,7 +341,6 @@ class Landsat:
         Lg = gdal.Open(resampName2)
         RadDown = Lg.ReadAsArray()
         RadDown = (RadDown*(nu4**2/10**7))#*.001
-        print "RadDown Size: %f,%f" % (RadDown.shape[0],RadDown.shape[1])
         Lg = None
         
         #Process upwelling radiance
@@ -359,7 +357,6 @@ class Landsat:
         Lg = gdal.Open(resampName2)
         RadUp = Lg.ReadAsArray()
         RadUp = (RadUp*(nu4**2/10**7))#*.001
-        print "RadUp Size: %f,%f" % (RadUp.shape[0],RadUp.shape[1])
         Lg = None
         
         #Process transmission
@@ -392,8 +389,6 @@ class Landsat:
             
         aster = gdal.Open(ASTERemisFN)
         emis = aster.ReadAsArray()
-        print "emis Size: %f,%f" % (emis.shape[0],emis.shape[1])
-        #emis = emis[:-1,:-1]
         aster = None
         # calcualte LST
         emis[emis<0.000001] = np.nan
