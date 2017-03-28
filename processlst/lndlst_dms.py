@@ -352,6 +352,7 @@ def getSharpenedLST(sceneID):
     clean(landsatTemp,"%s.sharpened" % sceneID)
     clean(base,"th_samples")
     clean(base,"dms")
+    print("DONE SHARPENING")
     
     
     

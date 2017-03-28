@@ -153,7 +153,8 @@ def main():
     Folders = folders(base)    
     landsatTemp = Folders['landsatTemp']   
     landsatDataBase = Folders['landsatDataBase'] 
-    sceneIDlist = glob.glob(os.path.join(landsatTemp,'*.xml'))
+    #sceneIDlist = glob.glob(os.path.join(landsatTemp,'*.xml'))
+    sceneIDlist = glob.glob(os.path.join(landsatTemp,'*_MTL.txt'))
 
 
     # ------------------------------------------------------------------------
