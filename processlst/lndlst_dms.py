@@ -338,8 +338,11 @@ def getSharpenedLST(sceneID):
     # convert from ENVI to geoTIFF
     fn = os.path.join(landsatTemp,"%s.sharpened_band6.bin" % sceneID)
     g = gdal.Open(fn)
+    #=====convert to celcius and scale data======
     data = g.ReadAsArray()[1]
-    ls.clone(tifFile,data)
+    data = (data-273.15)*100.
+    dd = data.astype(np.int16)
+    ls.clone(tifFile,dd)
     
     # copy files to their proper places
     scenePath = os.path.join(landsatLST,sceneID[3:9])
