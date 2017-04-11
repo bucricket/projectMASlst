@@ -181,7 +181,7 @@ def main():
         #subprocess.call(["lndlst_dms3_sa.csh","%s" % landsatTemp])
         landsat = Landsat(inFN,username = earthLoginUser,
                               password = earthLoginPass)
-        getSharpenedLST(landsat.sceneID)
+        getSharpenedLST(inFN)
     
     #=====move files to their respective directories and remove temp
     for i in xrange(len(sceneIDlist)):

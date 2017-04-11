@@ -275,14 +275,16 @@ def localPredSK(sceneID,th_res,s_row,s_col):
     "%d" % e_row, "%d" % e_col])
     return localPred
     
-def getSharpenedLST(sceneID):
-    meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
+def getSharpenedLST(metaFN):
+    meta = landsat_metadata(metaFN)
+    sceneID =meta.LANDSAT_SCENE_ID
+    productID = meta.LANDSAT_PRODUCT_ID
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
     ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT-(sw_res*0.5)
     uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT+(sw_res*0.5)
     xres = meta.GRID_CELL_SIZE_REFLECTIVE
     yres = meta.GRID_CELL_SIZE_REFLECTIVE   
-    ls = GeoTIFF(os.path.join(landsatTemp,'%s_sr_band1.tif' % sceneID))
+    ls = GeoTIFF(os.path.join(landsatTemp,'%s_sr_band1.tif' % productID))
     th_res = meta.GRID_CELL_SIZE_THERMAL
     if sceneID[2]=="5":
         th_res = 120

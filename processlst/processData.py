@@ -26,21 +26,25 @@ class RTTOV:
         Folders = folders(base)  
         self.earthLoginUser = username
         self.earthLoginPass = password
-        self.sceneID = filepath.split(os.sep)[-1][:21]
-        self.scene = self.sceneID[3:9]
-        self.yeardoy = self.sceneID[9:16]     
+#        self.sceneID = filepath.split(os.sep)[-1][:21]
+#        self.scene = self.sceneID[3:9]
+#        self.yeardoy = self.sceneID[9:16]     
         self.landsatSR = Folders['landsatSR']
-        meta = landsat_metadata(os.path.join(self.landsatSR, 
-                                                          self.scene,'%s_MTL.txt' % self.sceneID))
+#        meta = landsat_metadata(os.path.join(self.landsatSR, 
+#                                                          self.scene,'%s_MTL.txt' % self.sceneID))
+        meta = landsat_metadata(filepath)
+        self.sceneID = meta.LANDSAT_PRODUCT_ID
+        self.scene = self.sceneID.split('_')[2]
         self.ulLat = meta.CORNER_UL_LAT_PRODUCT
         self.ulLon = meta.CORNER_UL_LON_PRODUCT
         self.lrLat = meta.CORNER_LR_LAT_PRODUCT
         self.lrLon = meta.CORNER_LR_LON_PRODUCT
         self.solZen = meta.SUN_ELEVATION
         self.solAzi = meta.SUN_AZIMUTH
-        self.landsatDate = meta.DATE_ACQUIRED
-        self.landsatTime = meta.SCENE_CENTER_TIME[:-2]
-        d = datetime.strptime('%s%s' % (self.landsatDate,self.landsatTime),'%Y-%m-%d%H:%M:%S.%f')
+#        self.landsatDate = meta.DATE_ACQUIRED
+#        self.landsatTime = meta.SCENE_CENTER_TIME[:-2]
+#        d = datetime.strptime('%s%s' % (self.landsatDate,self.landsatTime),'%Y-%m-%d%H:%M:%S.%f')
+        d = meta.DATETIME_OBJ
         self.year = d.year
         self.month = d.month
         self.day = d.day
@@ -226,12 +230,15 @@ class Landsat:
         self.ASTERmosaicTemp = Folders['ASTERmosaicTemp']
         self.landsatDataBase = Folders['landsatDataBase']
         self.landsatEmissivityBase = Folders['landsatEmissivityBase']
-        self.sceneID = filepath.split(os.sep)[-1][:21]
-        self.scene = self.sceneID[3:9]
-        self.yeardoy = self.sceneID[9:16]
+#        self.sceneID = filepath.split(os.sep)[-1][:-8]
+#        self.scene = self.sceneID[3:9]
+#        self.yeardoy = self.sceneID[9:16]
         
-        meta = landsat_metadata(os.path.join(self.landsatSR, 
-                                                          self.scene,'%s_MTL.txt' % self.sceneID))
+#        meta = landsat_metadata(os.path.join(self.landsatSR, 
+#                                                          self.scene,'%s_MTL.txt' % self.sceneID))
+        meta = landsat_metadata(filepath)
+        self.sceneID = meta.LANDSAT_PRODUCT_ID
+        self.scene = self.sceneID.split('_')[2]
         self.ls = GeoTIFF(os.path.join(self.landsatSR, self.scene,'%s_sr_band1.tif' % self.sceneID))
         self.proj4 = self.ls.proj4
         self.inProj4 = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
