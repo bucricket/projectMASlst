@@ -90,7 +90,9 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     file.write("end")
     file.close()
 
-def finalDMSinp(sceneID,ext):
+def finalDMSinp(productID,ext):
+    meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % productID))
+    sceneID = meta.LANDSAT_SCENE_ID
     blue = os.path.join(landsatTemp,"%s_sr_band2.blue.dat" % sceneID)
     green = os.path.join(landsatTemp,"%s_sr_band3.green.dat" % sceneID)
     red = os.path.join(landsatTemp,"%s_sr_band4.red.dat" % sceneID)
@@ -299,7 +301,7 @@ def getSharpenedLST(metaFN):
     dmsfn = "dms.inp"
     # create dms.inp
     print("========GLOBAL PREDICTION===========")
-    finalDMSinp(sceneID,"global")  
+    finalDMSinp(productID,"global")  
     # do global prediction
     subprocess.call(["get_samples","%s" % dmsfn])
     
