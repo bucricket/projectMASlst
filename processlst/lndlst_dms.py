@@ -26,7 +26,9 @@ landsatLST = Folders['landsatLST']
 # global prediction
 
 
-def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
+def perpareDMSinp(productID,s_row,s_col,locglob,ext):
+    meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % productID))
+    sceneID = meta.LANDSAT_SCENE_ID
     blue = os.path.join(landsatTemp,"%s_sr_band2.blue.dat" % sceneID)
     green = os.path.join(landsatTemp,"%s_sr_band3.green.dat" % sceneID)
     red = os.path.join(landsatTemp,"%s_sr_band4.red.dat" % sceneID)
@@ -153,7 +155,7 @@ def finalDMSinp(productID,ext):
     file.write("OUT_FILE = %s\n" % sharpendFN)
     file.write("end")
     file.close()    
-def localPred(sceneID,th_res,s_row,s_col):
+def localPred(productID,th_res,s_row,s_col):
 
     wsize1 = 200
     overlap1 = 20
@@ -167,7 +169,7 @@ def localPred(sceneID,th_res,s_row,s_col):
     os_col = s_col - overlap
     oe_row = e_row +overlap
     oe_col = e_col + overlap
-    perpareDMSinp(sceneID,s_row,s_col,"local","bin")
+    perpareDMSinp(productID,s_row,s_col,"local","bin")
     #dmsfn = os.path.join(landsatTemp,"dms_%d_%d.inp" % (s_row,s_col))
     dmsfn = "dms_%d_%d.inp" % (s_row,s_col)
     # do cubist prediction
