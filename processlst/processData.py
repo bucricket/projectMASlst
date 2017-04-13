@@ -33,8 +33,8 @@ class RTTOV:
 #        meta = landsat_metadata(os.path.join(self.landsatSR, 
 #                                                          self.scene,'%s_MTL.txt' % self.sceneID))
         meta = landsat_metadata(filepath)
-        self.sceneID = meta.LANDSAT_PRODUCT_ID
-        self.scene = self.sceneID.split('_')[2]
+        self.productID = meta.LANDSAT_PRODUCT_ID
+        self.scene = self.productID.split('_')[2]
         self.ulLat = meta.CORNER_UL_LAT_PRODUCT
         self.ulLon = meta.CORNER_UL_LON_PRODUCT
         self.lrLat = meta.CORNER_LR_LAT_PRODUCT
@@ -237,9 +237,10 @@ class Landsat:
 #        meta = landsat_metadata(os.path.join(self.landsatSR, 
 #                                                          self.scene,'%s_MTL.txt' % self.sceneID))
         meta = landsat_metadata(filepath)
-        self.sceneID = meta.LANDSAT_PRODUCT_ID
-        self.scene = self.sceneID.split('_')[2]
-        self.ls = GeoTIFF(os.path.join(self.landsatSR, self.scene,'%s_sr_band1.tif' % self.sceneID))
+        self.productID = meta.LANDSAT_PRODUCT_ID
+        self.sceneID = meta.LANDSAT_SCENE_ID
+        self.scene = self.productID.split('_')[2]
+        self.ls = GeoTIFF(os.path.join(self.landsatSR, self.scene,'%s_sr_band1.tif' % self.productID))
         self.proj4 = self.ls.proj4
         self.inProj4 = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
         self.ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT
@@ -314,7 +315,7 @@ class Landsat:
     def processLandsatLST(self,tirsRttov,merraDict):
         
         # Landsat brightness temperature
-        landsat = os.path.join(self.landsatTemp,"%s_bt_band10.tif" % self.sceneID)
+        landsat = os.path.join(self.landsatTemp,"%s_bt_band10.tif" % self.productID)
         Lg = gdal.Open(landsat)
         BT= Lg.ReadAsArray()/10.
         #=====get radiance from BT=========
