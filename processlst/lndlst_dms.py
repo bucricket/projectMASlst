@@ -320,7 +320,7 @@ def getSharpenedLST(metaFN):
     wsize1 = 200
     wsize = int((wsize1*120)/th_res)
     # process local parts in parallel
-    Parallel(n_jobs=njobs, verbose=5)(delayed(localPred)(sceneID,th_res,s_row,s_col) for s_col in range(0,int(ncols/wsize)*wsize,wsize) for s_row in range(0,int(nrows/wsize)*wsize,wsize))
+    Parallel(n_jobs=njobs, verbose=5)(delayed(localPred)(productID,th_res,s_row,s_col) for s_col in range(0,int(ncols/wsize)*wsize,wsize) for s_row in range(0,int(nrows/wsize)*wsize,wsize))
     # put the parts back together
     finalFile = os.path.join(landsatTemp,'%s.sharpened_band6.local' % sceneID)
     tifFile = os.path.join(landsatTemp,'%s_lstSharp.tiff' % sceneID)
