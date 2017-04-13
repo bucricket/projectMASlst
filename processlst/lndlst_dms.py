@@ -338,7 +338,7 @@ def getSharpenedLST(metaFN):
       
     #subprocess.call(["gdal_merge.py", "-o", "%s" % finalFile , "%s" % os.path.join(landsatTemp,'%s.local*' % sceneID)])
     # combine the the local and global images
-    finalDMSinp(sceneID,"bin")
+    finalDMSinp(productID,"bin")
     subprocess.call(["combine_models","dms.inp"])
     # convert from ENVI to geoTIFF
     fn = os.path.join(landsatTemp,"%s.sharpened_band6.bin" % sceneID)
