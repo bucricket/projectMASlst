@@ -34,7 +34,6 @@ def perpareDMSinp(sceneID,s_row,s_col,locglob,ext):
     swir1 = os.path.join(landsatTemp,"%s_sr_band6.swir1.dat" % sceneID)
     swir2 = os.path.join(landsatTemp,"%s_sr_band7.swir2.dat" % sceneID)
     cloud = os.path.join(landsatTemp,"%s_cfmask.cloud.dat" % sceneID)
-    meta = landsat_metadata(os.path.join(landsatTemp,'%s_MTL.txt' % sceneID))
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
     ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT-(sw_res*0.5)
     uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT+(sw_res*0.5)
