@@ -12,8 +12,8 @@ import subprocess
 from osgeo import gdal
 import h5py
 import shutil
-from .landsatTools import landsat_metadata,GeoTIFF
-from .utils import folders,writeArray2Tiff,getHTTPdata
+from landsatTools import landsat_metadata,GeoTIFF
+from utils import folders,writeArray2Tiff,getHTTPdata
 from pydap.cas import urs
 from pydap import client
 
@@ -269,7 +269,7 @@ class Landsat:
                 asterFN = 'AG100.v003.%s.%s.0001.h5' % (latString,lonString)
                 # ASTER Emissivity product AG100 comes in 1 x 1 degree tiles where UL is given in the filename.
                 ASTERurl = os.path.join(ASTERurlBase,asterFN)
-                print ASTERurl
+                #print ASTERurl
                 localAsterFN = os.path.join(self.asterEmissivityBase,asterFN)
                 
                 if not os.path.isfile(localAsterFN):

@@ -32,6 +32,13 @@ srcDir = os.path.join(processDir,'source')
 #shutil.copyfile(os.path.join(srcDir,'lndlst_dms3_sa.csh'),os.path.join(prefix,'bin','lndlst_dms3_sa.csh'))
 #os.chmod(os.path.join(prefix,'bin','prepareDMS3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
 #os.chmod(os.path.join(prefix,'bin','lndlst_dms3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
+
+print ("installing Landsat_DMS...")
+mkPath = os.path.join(processDir,'source','Landsat_DMS')
+os.chdir(mkPath)
+subprocess.call(["scons","-Q","--prefix=%s" % prefix,"install"])
+subprocess.call(["scons","-c"])
+
 #=============setup the python scripts============================
 
 

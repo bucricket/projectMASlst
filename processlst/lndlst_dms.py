@@ -12,8 +12,8 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import AdaBoostRegressor
 import pandas as pd
 from scipy.ndimage import zoom
-from .utils import folders,writeArray2Envi,clean
-from .landsatTools import landsat_metadata, GeoTIFF
+from utils import folders,writeArray2Envi,clean
+from landsatTools import landsat_metadata, GeoTIFF
 import subprocess
 from joblib import Parallel, delayed
 import shutil
