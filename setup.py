@@ -44,7 +44,7 @@ setup(
     author_email="mitch.schull@noaa.gov",
     url="https://github.com/bucricket/projectMASlst.git",
     py_modules=['processlst.processlst','processlst.utils',
-            'processlst.lnd_dms','processlst.landsatTools',
+            'processlst.lndlst_dms','processlst.landsatTools',
             'processlst.processData'],
 #    packages= ['processlst'],
     platforms='Posix; MacOS X; Windows',
