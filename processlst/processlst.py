@@ -23,7 +23,6 @@ from .lndlst_dms import getSharpenedLST
 
 base = os.getcwd()
 Folders = folders(base)   
-modis_base = Folders['modis_base']
 landsat_SR = Folders['landsat_SR']
 landsat_LST = Folders['landsat_LST']
 landsat_temp = Folders['landsat_Temp']
