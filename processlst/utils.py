@@ -12,6 +12,7 @@ import tarfile
 import numpy as np
 
 
+
 class earthDataHTTPRedirectHandler(urllib2.HTTPRedirectHandler):
     def http_error_302(self, req, fp, code, msg, headers):
         return urllib2.HTTPRedirectHandler.http_error_302(self, req, fp, code, msg, headers)
@@ -100,15 +101,15 @@ def folders(base):
     dataBase = os.path.join(base,'data')
     landsatDataBase = os.path.join(dataBase,'Landsat-8')
     asterDataBase = os.path.join(dataBase,'ASTER')
-    landsatSR = os.path.join(landsatDataBase,'SR')
-    if not os.path.exists(landsatSR):
-        os.makedirs(landsatSR)
-    landsatTemp = os.path.join(landsatSR,'temp')
-    if not os.path.exists(landsatTemp):
-        os.makedirs(landsatTemp)
-    landsatLST = os.path.join(landsatDataBase,'LST')
-    if not os.path.exists(landsatLST):
-        os.makedirs(landsatLST)
+    landsat_SR = os.path.join(landsatDataBase,'SR')
+    if not os.path.exists(landsat_SR):
+        os.makedirs(landsat_SR)
+    landsat_Temp = os.path.join(landsat_SR,'temp')
+    if not os.path.exists(landsat_Temp):
+        os.makedirs(landsat_Temp)
+    landsat_LST = os.path.join(landsatDataBase,'LST')
+    if not os.path.exists(landsat_LST):
+        os.makedirs(landsat_LST)
     asterEmissivityBase = os.path.join(asterDataBase,'asterEmissivity')
     if not os.path.exists(asterEmissivityBase):
         os.makedirs(asterEmissivityBase)
@@ -118,10 +119,10 @@ def folders(base):
     ASTERmosaicTemp = os.path.join(asterDataBase,'mosaicTemp')    
     if not os.path.exists(ASTERmosaicTemp):
         os.makedirs(ASTERmosaicTemp)
-    out = {'landsatLST':landsatLST,'landsatSR':landsatSR,
+    out = {'landsat_LST':landsat_LST,'landsat_SR':landsat_SR,
     'asterEmissivityBase':asterEmissivityBase,'ASTERmosaicTemp':ASTERmosaicTemp,
     'landsatDataBase':landsatDataBase, 'landsatEmissivityBase':landsatEmissivityBase,
-    'landsatTemp':landsatTemp}
+    'landsatTemp':landsat_Temp}
     return out
 
 def clean(directory,ext):
@@ -146,6 +147,7 @@ def untar(fname, fpath):
     tar.close()
     os.remove(fname)
     
+    
 # helper function
 def _test_outside(testx, lower, upper):
     """
@@ -161,3 +163,4 @@ def _test_outside(testx, lower, upper):
 class RasterError(Exception):
     """Custom exception for errors during raster processing in Pygaarst"""
     pass
+

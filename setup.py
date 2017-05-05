@@ -28,10 +28,10 @@ processDi = os.path.abspath(os.path.join(prefix,os.pardir))
 processDir = os.path.join(processDi,'work')
 srcDir = os.path.join(processDir,'source')
 
-shutil.copyfile(os.path.join(srcDir,'prepareDMS3_sa.csh'),os.path.join(prefix,'bin','prepareDMS3_sa.csh'))
-shutil.copyfile(os.path.join(srcDir,'lndlst_dms3_sa.csh'),os.path.join(prefix,'bin','lndlst_dms3_sa.csh'))
-os.chmod(os.path.join(prefix,'bin','prepareDMS3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
-os.chmod(os.path.join(prefix,'bin','lndlst_dms3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
+#shutil.copyfile(os.path.join(srcDir,'prepareDMS3_sa.csh'),os.path.join(prefix,'bin','prepareDMS3_sa.csh'))
+#shutil.copyfile(os.path.join(srcDir,'lndlst_dms3_sa.csh'),os.path.join(prefix,'bin','lndlst_dms3_sa.csh'))
+#os.chmod(os.path.join(prefix,'bin','prepareDMS3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
+#os.chmod(os.path.join(prefix,'bin','lndlst_dms3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
 #=============setup the python scripts============================
 
 
@@ -43,7 +43,9 @@ setup(
     author="Mitchell Schull",
     author_email="mitch.schull@noaa.gov",
     url="https://github.com/bucricket/projectMASlst.git",
-    packages= ['processlst'],
+    py_modules=['processlst.processlst','processlst.utils',
+            'processlst.lnd_dms','processlst.landsatTools'],
+#    packages= ['processlst'],
     platforms='Posix; MacOS X; Windows',
     license='BSD 3-Clause',
     classifiers=[

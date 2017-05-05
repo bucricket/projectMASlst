@@ -154,7 +154,8 @@ def finalDMSinp(productID,ext):
     file.write("CUBIST_FILE_STEM = th_samples\n")
     file.write("OUT_FILE = %s\n" % sharpendFN)
     file.write("end")
-    file.close()    
+    file.close()   
+    
 def localPred(productID,th_res,s_row,s_col):
 
     wsize1 = 200

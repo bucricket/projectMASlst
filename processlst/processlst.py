@@ -21,6 +21,14 @@ from .utils import folders,untar,getFile
 from .lndlst_dms import getSharpenedLST
 
 
+base = os.getcwd()
+Folders = folders(base)   
+modis_base = Folders['modis_base']
+landsat_SR = Folders['landsat_SR']
+landsat_LST = Folders['landsat_LST']
+landsat_temp = Folders['landsat_Temp']
+
+
 def runRTTOV(profileDict):
     nlevels = profileDict['P'].shape[1]
     nprofiles = profileDict['P'].shape[0]
@@ -132,29 +140,8 @@ def runRTTOV(profileDict):
         
     return tirsRttov
 
-def main():
-    
-    parser = argparse.ArgumentParser()
-    parser.add_argument("earthLoginUser", type=str, help="earthLoginUser")
-    parser.add_argument("earthLoginPass", type=str, help="earthLoginPass")
-    args = parser.parse_args()
-    earthLoginUser = args.earthLoginUser
-    earthLoginPass = args.earthLoginPass
-         # =====earthData credentials===============
-    if earthLoginUser == None:
-        earthLoginUser = str(getpass.getpass(prompt="earth login username:"))
-        if keyring.get_password("nasa",earthLoginUser)==None:
-            earthLoginPass = str(getpass.getpass(prompt="earth login password:"))
-            keyring.set_password("nasa",earthLoginUser,earthLoginPass)
-        else:
-            earthLoginPass = str(keyring.get_password("nasa",earthLoginUser)) 
-
-    base = os.getcwd()    
-    Folders = folders(base)    
-    landsatTemp = Folders['landsatTemp']   
-    landsatDataBase = Folders['landsatDataBase'] 
-    #sceneIDlist = glob.glob(os.path.join(landsatTemp,'*.xml'))
-    sceneIDlist = glob.glob(os.path.join(landsatTemp,'*_MTL.txt'))
+def get_lst(earth_user,earth_pass):
+    sceneIDlist = glob.glob(os.path.join(landsat_temp,'*_MTL.txt'))
 
 
     # ------------------------------------------------------------------------
@@ -162,38 +149,49 @@ def main():
     # ------------------------------------------------------------------------
     for i in xrange(len(sceneIDlist)):
         inFN = sceneIDlist[i]
-        landsat = Landsat(inFN,username = earthLoginUser,
-                          password = earthLoginPass)
-        rttov = RTTOV(inFN,username = earthLoginUser,
-                          password = earthLoginPass)
-        tifFile = os.path.join(landsatTemp,'%s_lst.tiff'% landsat.sceneID)
-        binFile = os.path.join(landsatTemp,"lndsr."+landsat.sceneID+".cband6.bin")
+        landsat = Landsat(inFN,username = earth_user,
+                          password = earth_pass)
+        rttov = RTTOV(inFN,username = earth_user,
+                          password = earth_pass)
+        tifFile = os.path.join(landsat_temp,'%s_lst.tiff'% landsat.sceneID)
+        binFile = os.path.join(landsat_temp,"lndsr."+landsat.sceneID+".cband6.bin")
         if not os.path.exists(tifFile):
             profileDict = rttov.preparePROFILEdata()
             tiirsRttov = runRTTOV(profileDict)
             landsat.processLandsatLST(tiirsRttov,profileDict)
 
-        
-            
         subprocess.call(["gdal_translate","-of", "ENVI", "%s" % tifFile, "%s" % binFile])
-        #subprocess.call(["GeoTiff2ENVI","%s" % tifFile, "%s" % binFile])
-        #=====sharpen the corrected LST==========================================
-        #subprocess.call(["lndlst_dms3_sa.csh","%s" % landsatTemp])
-        landsat = Landsat(inFN,username = earthLoginUser,
-                              password = earthLoginPass)
+
+    #=====sharpen the corrected LST==========================================
+
         getSharpenedLST(inFN)
     
     #=====move files to their respective directories and remove temp
-    for i in xrange(len(sceneIDlist)):
-        inFN = sceneIDlist[i]
-        landsat = Landsat(inFN,username = earthLoginUser,
-                          password = earthLoginPass)
-        sharpenedSceneDir = os.path.join(landsatDataBase,'LST',landsat.scene)
-        if not os.path.exists(sharpenedSceneDir):
-            os.mkdir(sharpenedSceneDir)
-        binFN = os.path.join(landsatTemp,'%s.sharpened_band6.bin' % landsat.sceneID)
-        tifFN = os.path.join(sharpenedSceneDir,'%s_lstSharp.tiff' % landsat.sceneID)
+
+        binFN = os.path.join(landsat_temp,'%s.sharpened_band6.bin' % landsat.sceneID)
+        tifFN = os.path.join(landsat_LST,'%s_lstSharp.tiff' % landsat.sceneID)
         subprocess.call(["gdal_translate", "-of","GTiff","%s" % binFN,"%s" % tifFN]) 
+        
+        
+def main():
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("earth_user", type=str, help="earth Login Username")
+    parser.add_argument("earth_pass", type=str, help="earth Login Password")
+    args = parser.parse_args()
+    earth_user = args.earth_user
+    earth_pass = args.earth_pass
+    # =====earthData credentials===============
+    if earth_user == None:
+        earth_user = str(getpass.getpass(prompt="earth login username:"))
+        if keyring.get_password("nasa",earth_user)==None:
+            earth_pass = str(getpass.getpass(prompt="earth login password:"))
+            keyring.set_password("nasa",earth_user,earth_pass)
+        else:
+            earth_pass = str(keyring.get_password("nasa",earth_user)) 
+
+    get_lst(earth_user,earth_pass)
+    
 
 
 if __name__ == "__main__":

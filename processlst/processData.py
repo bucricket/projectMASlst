@@ -12,7 +12,6 @@ import subprocess
 from osgeo import gdal
 import h5py
 import shutil
-import glob
 from .landsatTools import landsat_metadata,GeoTIFF
 from .utils import folders,writeArray2Tiff,getHTTPdata
 from pydap.cas import urs
@@ -25,13 +24,8 @@ class RTTOV:
         base = os.getcwd()
         Folders = folders(base)  
         self.earthLoginUser = username
-        self.earthLoginPass = password
-#        self.sceneID = filepath.split(os.sep)[-1][:21]
-#        self.scene = self.sceneID[3:9]
-#        self.yeardoy = self.sceneID[9:16]     
-        self.landsatSR = Folders['landsatSR']
-#        meta = landsat_metadata(os.path.join(self.landsatSR, 
-#                                                          self.scene,'%s_MTL.txt' % self.sceneID))
+        self.earthLoginPass = password   
+        self.landsatSR = Folders['landsat_SR']
         meta = landsat_metadata(filepath)
         self.productID = meta.LANDSAT_PRODUCT_ID
         self.scene = self.productID.split('_')[2]
@@ -41,9 +35,6 @@ class RTTOV:
         self.lrLon = meta.CORNER_LR_LON_PRODUCT
         self.solZen = meta.SUN_ELEVATION
         self.solAzi = meta.SUN_AZIMUTH
-#        self.landsatDate = meta.DATE_ACQUIRED
-#        self.landsatTime = meta.SCENE_CENTER_TIME[:-2]
-#        d = datetime.strptime('%s%s' % (self.landsatDate,self.landsatTime),'%Y-%m-%d%H:%M:%S.%f')
         d = meta.DATETIME_OBJ
         self.year = d.year
         self.month = d.month
@@ -223,9 +214,9 @@ class Landsat:
         Folders = folders(base)    
         self.earthLoginUser = username
         self.earthLoginPass = password
-        self.landsatLST = Folders['landsatLST']
-        self.landsatSR = Folders['landsatSR']
-        self.landsatTemp = Folders['landsatTemp']
+        self.landsatLST = Folders['landsat_LST']
+        self.landsatSR = Folders['landsat_SR']
+        self.landsatTemp = Folders['landsat_Temp']
         self.asterEmissivityBase= Folders['asterEmissivityBase']
         self.ASTERmosaicTemp = Folders['ASTERmosaicTemp']
         self.landsatDataBase = Folders['landsatDataBase']
@@ -405,15 +396,10 @@ class Landsat:
 
         LST = np.array(self.Kappa2*(1/np.log(self.Kappa1/surfRad)), dtype='float32')
 
-#        lstFolder = os.path.join(self.landsatTemp,self.scene)
-#        if not os.path.exists(lstFolder):
-#            os.makedirs(lstFolder)
         
         lstName = os.path.join(self.landsatTemp,'%s_lst.tiff'% self.sceneID)
         #write LST to a geoTiff
         self.ls.clone(lstName ,LST)
 
-
-        #writeImageData(LST,geo,proj,LST.shape,'GTiff',lstName,gdal.GDT_Float32)
         
-        print 'done processing LST'
+        print('done processing LST')
