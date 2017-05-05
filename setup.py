@@ -45,8 +45,16 @@ subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libgeotiff.a'),
 "%s" % os.path.join(libDir,'libgeotiff.a')])
 subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libsz.a'), 
 "%s" % os.path.join(libDir,'libsz.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libGctp.a'), 
+"%s" % os.path.join(libDir,'libGctp.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libdf.a'), 
+"%s" % os.path.join(libDir,'libdf.a')])
 subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libz.a'), 
 "%s" % os.path.join(libDir,'libz.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libmfhdf.a'), 
+"%s" % os.path.join(libDir,'libmfhdf.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libhdfeos.a'), 
+"%s" % os.path.join(libDir,'libhdfeos.a')])
 
 print ("installing Landsat_DMS...")
 mkPath = os.path.join(processDir,'source','Landsat_DMS')
