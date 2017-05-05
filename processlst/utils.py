@@ -122,7 +122,7 @@ def folders(base):
     out = {'landsat_LST':landsat_LST,'landsat_SR':landsat_SR,
     'asterEmissivityBase':asterEmissivityBase,'ASTERmosaicTemp':ASTERmosaicTemp,
     'landsatDataBase':landsatDataBase, 'landsatEmissivityBase':landsatEmissivityBase,
-    'landsatTemp':landsat_Temp}
+    'landsat_Temp':landsat_Temp}
     return out
 
 def clean(directory,ext):
