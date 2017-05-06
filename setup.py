@@ -3,8 +3,7 @@
 from __future__ import print_function
 import subprocess
 import sys
-import os, stat
-import shutil
+import os
 
 # set project base directory structure
 base = os.getcwd()
@@ -24,18 +23,13 @@ p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
 out = p.communicate()
 condaPath = out[0][:-1]
 
-#prefix  = os.environ.get('PREFIX')
-prefix = sys.prefix
+prefix  = os.environ.get('PREFIX')
 processDi = os.path.abspath(os.path.join(prefix,os.pardir))
 processDir = os.path.join(processDi,'work')
 srcDir = os.path.join(processDir,'source')
 libEnv = os.path.join(prefix,'lib')
 libDir = os.path.join(processDir,'source','lib')
 
-#shutil.copyfile(os.path.join(srcDir,'prepareDMS3_sa.csh'),os.path.join(prefix,'bin','prepareDMS3_sa.csh'))
-#shutil.copyfile(os.path.join(srcDir,'lndlst_dms3_sa.csh'),os.path.join(prefix,'bin','lndlst_dms3_sa.csh'))
-#os.chmod(os.path.join(prefix,'bin','prepareDMS3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
-#os.chmod(os.path.join(prefix,'bin','lndlst_dms3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
 
 subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libtiff.a'), 
 "%s" % os.path.join(libDir,'libtiff.a')])
