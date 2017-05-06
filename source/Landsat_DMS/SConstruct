@@ -19,7 +19,7 @@ base1 = os.sep.join(prefix.split(os.sep)[:-1])
 base = os.path.join(base1,'work')
 sourcePath = os.path.join(base,'source')
 binPath = os.path.join(prefix,'bin')
-print(sourcePath)
+print(base1)
 
 
 #if not platform.system()=='Linux':
