@@ -9,7 +9,7 @@ base = os.getcwd()
     
 try:
     from setuptools import setup
-    setup_kwargs = {'entry_points': {'console_scripts':['processlst=processlst.processlst:main']}}
+    setup_kwargs = {'entry_points': {'console_scripts':['processlst=processlst2.processlst:main']}}
 except ImportError:
     from distutils.core import setup
     setup_kwargs = {'scripts': ['bin/processlst']}
@@ -66,9 +66,9 @@ setup(
     author="Mitchell Schull",
     author_email="mitch.schull@noaa.gov",
     url="https://github.com/bucricket/projectMASlst.git",
-    py_modules=['processlst.processlst','processlst.utils',
-                'processlst.lndlst_dms','processlst.landsatTools',
-                'processlst.processData'],
+    py_modules=['processlst2.processlst','processlst2.utils',
+                'processlst2.lndlst_dms','processlst2.landsatTools',
+                'processlst2.processData'],
     platforms='Posix; MacOS X; Windows',
     license='BSD 3-Clause',
     classifiers=[
