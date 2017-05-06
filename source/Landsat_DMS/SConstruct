@@ -13,14 +13,12 @@ AddOption('--prefix',
           help='installation prefix')
 env = Environment(PREFIX = GetOption('prefix'))
 prefix = GetOption('prefix')
-#base1 = os.path.abspath(os.path.join(prefix,os.pardir))
-base1 = os.sep.join(prefix.split(os.sep)[:-1])
+base1 = os.path.abspath(os.path.join(prefix,os.pardir))
+#base1 = os.sep.join(prefix.split(os.sep)[:-1])
 #base1 = os.path.join(prefix,os.pardir)
 base = os.path.join(base1,'work')
 sourcePath = os.path.join(base,'source')
 binPath = os.path.join(prefix,'bin')
-print(base1)
-
 
 #if not platform.system()=='Linux':
 env.Replace(CC = os.path.join(binPath,'gcc'))    
