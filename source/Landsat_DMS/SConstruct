@@ -18,6 +18,8 @@ base = os.path.join(base,'work')
 sourcePath = os.path.join(base,'source')
 binPath = os.path.join(prefix,'bin')
 
+print(prefix)
+
 #if not platform.system()=='Linux':
 env.Replace(CC = os.path.join(binPath,'gcc'))    
 env.Append(CCFLAGS = ['-static','-g','-O3'])
