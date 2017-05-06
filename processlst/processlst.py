@@ -16,9 +16,9 @@ import pycurl
 import keyring
 import getpass
 import ftplib
-from processData import Landsat,RTTOV
-from utils import folders,untar,getFile
-from lndlst_dms import getSharpenedLST
+from .processData import Landsat,RTTOV
+from .utils import folders,untar,getFile
+from .lndlst_dms import getSharpenedLST
 
 
 base = os.getcwd()

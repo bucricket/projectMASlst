@@ -12,8 +12,8 @@ import subprocess
 from osgeo import gdal
 import h5py
 import shutil
-from landsatTools import landsat_metadata,GeoTIFF
-from utils import folders,writeArray2Tiff,getHTTPdata
+from .landsatTools import landsat_metadata,GeoTIFF
+from .utils import folders,writeArray2Tiff,getHTTPdata
 from pydap.cas import urs
 from pydap import client
 
