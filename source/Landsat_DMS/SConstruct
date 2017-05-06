@@ -26,7 +26,7 @@ env.Append(CCFLAGS = ['-static','-g','-O3'])
 #env.Append(CCFLAGS = ['-static','-ffloat-store','-O3','-DVerbOpt',
 #'-g', '-Wall', '-O0'])
 env.Append(LIBPATH = [os.path.join(sourcePath,'lib')])
-env.Append(CPPPATH = [os.path.join(sourcePath,'include')])
+env.Append(CPPPATH = [os.path.join(sourcePath,'include'),os.path.join(prefix,'include')])
 env.Append(LIBS = ['geotiff','tiff','z','jpeg','m','lzma'])
 
 combineModels = env.Program(target='combine_models', source=['utility.c','sensor.c','combine_models.c'])
