@@ -20,7 +20,7 @@ base1 = os.path.abspath(os.path.join(prefix,os.pardir))
 base = os.path.join(base1,'work')
 sourcePath = os.path.join(base,'source')
 binPath = os.path.join(prefix,'bin')
-
+binPath = '/usr/bin'
 #if not platform.system()=='Linux':
 env.Replace(CC = os.path.join(binPath,'gcc'))    
 env.Append(CCFLAGS = ['-static','-g','-O3'])
