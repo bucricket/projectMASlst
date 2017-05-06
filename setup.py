@@ -23,7 +23,8 @@ p = subprocess.Popen(["conda", "info", "--root"],stdout=subprocess.PIPE)
 out = p.communicate()
 condaPath = out[0][:-1]
 
-prefix  = os.environ.get('PREFIX')
+#prefix  = os.environ.get('PREFIX')
+prefix = sys.prefix
 processDi = os.path.abspath(os.path.join(prefix,os.pardir))
 processDir = os.path.join(processDi,'work')
 srcDir = os.path.join(processDir,'source')
