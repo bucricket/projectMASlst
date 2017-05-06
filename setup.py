@@ -2,7 +2,6 @@
 
 from __future__ import print_function
 import subprocess
-import sys
 import os
 
 # set project base directory structure
@@ -59,8 +58,6 @@ subprocess.call(["scons","-Q","--prefix=%s" % prefix,"install"])
 subprocess.call(["scons","-c"])
 
 #=============setup the python scripts============================
-
-
 
 setup(
     name="projectmaslst",
