@@ -12,7 +12,8 @@ AddOption('--prefix',
           metavar='DIR',
           help='installation prefix')
 env = Environment(PREFIX = GetOption('prefix'))
-prefix = GetOption('prefix')
+#prefix = GetOption('prefix')
+prefix  = os.environ.get('PREFIX')
 base1 = os.path.abspath(os.path.join(prefix,os.pardir))
 #base1 = os.sep.join(prefix.split(os.sep)[:-1])
 #base1 = os.path.join(prefix,os.pardir)
