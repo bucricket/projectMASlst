@@ -9,12 +9,12 @@ base = os.getcwd()
     
 try:
     from setuptools import setup
-    setup_kwargs = {'entry_points': {'console_scripts':['processlst=processlst2.processlst:main']}}
+    setup_kwargs = {'entry_points': {'console_scripts':['processlst=processlst.processlst:main']}}
 except ImportError:
     from distutils.core import setup
     setup_kwargs = {'scripts': ['bin/processlst']}
     
-from processlst2 import __version__
+from processlst import __version__
 
 #=====build DMS binaries===============================
 # get Anaconda root location
@@ -28,7 +28,6 @@ processDir = os.path.join(processDi,'work')
 srcDir = os.path.join(processDir,'source')
 libEnv = os.path.join(prefix,'lib')
 libDir = os.path.join(processDir,'source','lib')
-
 
 subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libtiff.a'), 
 "%s" % os.path.join(libDir,'libtiff.a')])
@@ -66,9 +65,9 @@ setup(
     author="Mitchell Schull",
     author_email="mitch.schull@noaa.gov",
     url="https://github.com/bucricket/projectMASlst.git",
-    py_modules=['processlst2.processlst','processlst2.utils',
-                'processlst2.lndlst_dms','processlst2.landsatTools',
-                'processlst2.processData'],
+    py_modules=['processlst.processlst','processlst.utils',
+                'processlst.lndlst_dms','processlst.landsatTools',
+                'processlst.processData'],
     platforms='Posix; MacOS X; Windows',
     license='BSD 3-Clause',
     classifiers=[
@@ -83,4 +82,3 @@ setup(
     ],  
     **setup_kwargs
 )
-
