@@ -55,6 +55,7 @@ mkPath = os.path.join(processDir,'source','Landsat_DMS')
 os.chdir(mkPath)
 subprocess.call(["scons","-Q","--prefix=%s" % prefix,"install"])
 subprocess.call(["scons","-c"])
+os.chdir(base)
 
 #=============setup the python scripts============================
 
@@ -66,9 +67,9 @@ setup(
     author_email="mitch.schull@noaa.gov",
     url="https://github.com/bucricket/projectMASlst.git",
 #    packages= ['processlst'],
-    py_modules=['processlst','utils',
-                'lndlst_dms','landsatTools',
-                'processData'],
+    py_modules=['processlst.processlst','processlst.utils',
+                'processlst.lndlst_dms','processlst.landsatTools',
+                'processlst.processData'],
     platforms='Posix; MacOS X; Windows',
     license='BSD 3-Clause',
     classifiers=[
