@@ -159,17 +159,17 @@ def get_lst(earth_user,earth_pass):
             tiirsRttov = runRTTOV(profileDict)
             landsat.processLandsatLST(tiirsRttov,profileDict)
 
-        subprocess.call(["gdal_translate","-of", "ENVI", "%s" % tifFile, "%s" % binFile])
-
-    #=====sharpen the corrected LST==========================================
-
-        getSharpenedLST(inFN)
+            subprocess.call(["gdal_translate","-of", "ENVI", "%s" % tifFile, "%s" % binFile])
     
-    #=====move files to their respective directories and remove temp
-
-        binFN = os.path.join(landsat_temp,'%s.sharpened_band6.bin' % landsat.sceneID)
-        tifFN = os.path.join(landsat_LST,'%s_lstSharp.tiff' % landsat.sceneID)
-        subprocess.call(["gdal_translate", "-of","GTiff","%s" % binFN,"%s" % tifFN]) 
+        #=====sharpen the corrected LST==========================================
+    
+            getSharpenedLST(inFN)
+        
+        #=====move files to their respective directories and remove temp
+    
+            binFN = os.path.join(landsat_temp,'%s.sharpened_band6.bin' % landsat.sceneID)
+            tifFN = os.path.join(landsat_LST,'%s_lstSharp.tiff' % landsat.sceneID)
+            subprocess.call(["gdal_translate", "-of","GTiff","%s" % binFN,"%s" % tifFN]) 
         
         
 def main():
