@@ -26,8 +26,9 @@ landsat_LST = Folders['landsat_LST']
 # global prediction
 
 
-def perpareDMSinp(productID,s_row,s_col,locglob,ext):
-    meta = landsat_metadata(os.path.join(landsat_temp,'%s_MTL.txt' % productID))
+def perpareDMSinp(metaFN,s_row,s_col,locglob,ext):
+#    meta = landsat_metadata(os.path.join(landsat_temp,'%s_MTL.txt' % productID))
+    meta = landsat_metadata(metaFN)
     sceneID = meta.LANDSAT_SCENE_ID
     blue = os.path.join(landsat_temp,"%s_sr_band2.blue.dat" % sceneID)
     green = os.path.join(landsat_temp,"%s_sr_band3.green.dat" % sceneID)
@@ -91,8 +92,9 @@ def perpareDMSinp(productID,s_row,s_col,locglob,ext):
     file.write("end")
     file.close()
 
-def finalDMSinp(productID,ext):
-    meta = landsat_metadata(os.path.join(landsat_temp,'%s_MTL.txt' % productID))
+def finalDMSinp(metaFN,ext):
+#    meta = landsat_metadata(os.path.join(landsat_temp,'%s_MTL.txt' % productID))
+    meta = landsat_metadata(metaFN)
     sceneID = meta.LANDSAT_SCENE_ID
     blue = os.path.join(landsat_temp,"%s_sr_band2.blue.dat" % sceneID)
     green = os.path.join(landsat_temp,"%s_sr_band3.green.dat" % sceneID)
@@ -282,7 +284,8 @@ def localPredSK(sceneID,th_res,s_row,s_col):
 def getSharpenedLST(metaFN):
     meta = landsat_metadata(metaFN)
     sceneID =meta.LANDSAT_SCENE_ID
-    productID = meta.LANDSAT_PRODUCT_ID
+    #productID = meta.LANDSAT_PRODUCT_ID
+    productID = metaFN.split(os.sep)[-1][:-8]
     sw_res = meta.GRID_CELL_SIZE_REFLECTIVE
     ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT-(sw_res*0.5)
     uly = meta.CORNER_UL_PROJECTION_Y_PRODUCT+(sw_res*0.5)
@@ -303,7 +306,7 @@ def getSharpenedLST(metaFN):
     dmsfn = "dms.inp"
     # create dms.inp
     print("========GLOBAL PREDICTION===========")
-    finalDMSinp(productID,"global")  
+    finalDMSinp(metaFN,"global")  
     # do global prediction
     subprocess.call(["get_samples","%s" % dmsfn])
     
@@ -339,7 +342,7 @@ def getSharpenedLST(metaFN):
       
     #subprocess.call(["gdal_merge.py", "-o", "%s" % finalFile , "%s" % os.path.join(landsat_temp,'%s.local*' % sceneID)])
     # combine the the local and global images
-    finalDMSinp(productID,"bin")
+    finalDMSinp(metaFN,"bin")
     subprocess.call(["combine_models","dms.inp"])
     # convert from ENVI to geoTIFF
     fn = os.path.join(landsat_temp,"%s.sharpened_band6.bin" % sceneID)

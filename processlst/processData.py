@@ -27,8 +27,12 @@ class RTTOV:
         self.earthLoginPass = password   
         self.landsatSR = Folders['landsat_SR']
         meta = landsat_metadata(filepath)
-        self.productID = meta.LANDSAT_PRODUCT_ID
-        self.scene = self.productID.split('_')[2]
+#        self.productID = meta.LANDSAT_PRODUCT_ID
+#        self.scene = self.productID.split('_')[2]
+#        self.productID = filepath.split(os.sep)[-1][:-8]
+#        self.sceneID = meta.LANDSAT_SCENE_ID
+#        self.scene = self.productID.split('_')[2]
+#        self.scene = self.sceneID[3:9]
         self.ulLat = meta.CORNER_UL_LAT_PRODUCT
         self.ulLon = meta.CORNER_UL_LON_PRODUCT
         self.lrLat = meta.CORNER_LR_LAT_PRODUCT
@@ -228,9 +232,11 @@ class Landsat:
 #        meta = landsat_metadata(os.path.join(self.landsatSR, 
 #                                                          self.scene,'%s_MTL.txt' % self.sceneID))
         meta = landsat_metadata(filepath)
-        self.productID = meta.LANDSAT_PRODUCT_ID
+#        self.productID = meta.LANDSAT_PRODUCT_ID
+        self.productID = filepath.split(os.sep)[-1][:-8]
         self.sceneID = meta.LANDSAT_SCENE_ID
-        self.scene = self.productID.split('_')[2]
+#        self.scene = self.productID.split('_')[2]
+        self.scene = self.sceneID[3:9]
         self.ls = GeoTIFF(os.path.join(self.landsatSR, self.scene,'%s_sr_band1.tif' % self.productID))
         self.proj4 = self.ls.proj4
         self.inProj4 = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
