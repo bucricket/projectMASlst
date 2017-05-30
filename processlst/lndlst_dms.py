@@ -158,7 +158,7 @@ def finalDMSinp(metaFN,ext):
     file.write("end")
     file.close()   
     
-def localPred(productID,th_res,s_row,s_col):
+def localPred(metaFN,th_res,s_row,s_col):
 
     wsize1 = 200
     overlap1 = 20
@@ -172,7 +172,7 @@ def localPred(productID,th_res,s_row,s_col):
     os_col = s_col - overlap
     oe_row = e_row +overlap
     oe_col = e_col + overlap
-    perpareDMSinp(productID,s_row,s_col,"local","bin")
+    perpareDMSinp(metaFN,s_row,s_col,"local","bin")
     #dmsfn = os.path.join(landsat_temp,"dms_%d_%d.inp" % (s_row,s_col))
     dmsfn = "dms_%d_%d.inp" % (s_row,s_col)
     # do cubist prediction
@@ -182,7 +182,9 @@ def localPred(productID,th_res,s_row,s_col):
     subprocess.call(["predict_fineT","%s" % dmsfn,"%d" % s_row, "%d" % s_col, 
     "%d" % e_row, "%d" % e_col])
     
-def globalPredSK(sceneID):
+def globalPredSK(metaFN):
+    meta = landsat_metadata(metaFN)
+    sceneID = meta.LANDSAT_SCENE_ID
     base = os.getcwd()
     regr_1 = DecisionTreeRegressor(max_depth=15)
     rng = np.random.RandomState(1)
@@ -255,7 +257,7 @@ def globalPredSK(sceneID):
     
     return np.reshape(outData,[blueData.shape[0],blueData.shape[1]])
 
-def localPredSK(sceneID,th_res,s_row,s_col):
+def localPredSK(metaFN,th_res,s_row,s_col):
 
     wsize1 = 200
     overlap1 = 20
@@ -269,13 +271,13 @@ def localPredSK(sceneID,th_res,s_row,s_col):
     os_col = s_col - overlap
     oe_row = e_row +overlap
     oe_col = e_col + overlap
-    perpareDMSinp(sceneID,s_row,s_col,"local","bin")
+    perpareDMSinp(metaFN,s_row,s_col,"local","bin")
     #dmsfn = os.path.join(landsat_temp,"dms_%d_%d.inp" % (s_row,s_col))
     dmsfn = "dms_%d_%d.inp" % (s_row,s_col)
     # do cubist prediction
     subprocess.call(["get_samples","%s" % dmsfn,"%d" % os_row,"%d" % os_col,
     "%d" % oe_row,"%d" % oe_col])
-    localPred = globalPredSK(sceneID)
+    localPred = globalPredSK(metaFN)
     subprocess.call(["cubist","-f", "th_samples_%d_%d" % (s_row,s_col),"-u","-r","15"])
     subprocess.call(["predict_fineT","%s" % dmsfn,"%d" % s_row, "%d" % s_col, 
     "%d" % e_row, "%d" % e_col])
@@ -325,7 +327,7 @@ def getSharpenedLST(metaFN):
     wsize1 = 200
     wsize = int((wsize1*120)/th_res)
     # process local parts in parallel
-    Parallel(n_jobs=njobs, verbose=5)(delayed(localPred)(productID,th_res,s_row,s_col) for s_col in range(0,int(ncols/wsize)*wsize,wsize) for s_row in range(0,int(nrows/wsize)*wsize,wsize))
+    Parallel(n_jobs=njobs, verbose=5)(delayed(localPred)(metaFN,th_res,s_row,s_col) for s_col in range(0,int(ncols/wsize)*wsize,wsize) for s_row in range(0,int(nrows/wsize)*wsize,wsize))
     # put the parts back together
     finalFile = os.path.join(landsat_temp,'%s.sharpened_band6.local' % sceneID)
     tifFile = os.path.join(landsat_temp,'%s_lstSharp.tiff' % sceneID)
