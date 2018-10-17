@@ -12,7 +12,6 @@ import subprocess
 from osgeo import gdal
 import h5py
 import shutil
-import glob
 from .landsatTools import landsat_metadata,GeoTIFF
 from .utils import folders,writeArray2Tiff,getHTTPdata
 from pydap.cas import urs
@@ -25,22 +24,22 @@ class RTTOV:
         base = os.getcwd()
         Folders = folders(base)  
         self.earthLoginUser = username
-        self.earthLoginPass = password
-        self.sceneID = filepath.split(os.sep)[-1][:21]
-        self.scene = self.sceneID[3:9]
-        self.yeardoy = self.sceneID[9:16]     
-        self.landsatSR = Folders['landsatSR']
-        meta = landsat_metadata(os.path.join(self.landsatSR, 
-                                                          self.scene,'%s_MTL.txt' % self.sceneID))
+        self.earthLoginPass = password   
+        self.landsatSR = Folders['landsat_SR']
+        meta = landsat_metadata(filepath)
+#        self.productID = meta.LANDSAT_PRODUCT_ID
+#        self.scene = self.productID.split('_')[2]
+#        self.productID = filepath.split(os.sep)[-1][:-8]
+#        self.sceneID = meta.LANDSAT_SCENE_ID
+#        self.scene = self.productID.split('_')[2]
+#        self.scene = self.sceneID[3:9]
         self.ulLat = meta.CORNER_UL_LAT_PRODUCT
         self.ulLon = meta.CORNER_UL_LON_PRODUCT
         self.lrLat = meta.CORNER_LR_LAT_PRODUCT
         self.lrLon = meta.CORNER_LR_LON_PRODUCT
         self.solZen = meta.SUN_ELEVATION
         self.solAzi = meta.SUN_AZIMUTH
-        self.landsatDate = meta.DATE_ACQUIRED
-        self.landsatTime = meta.SCENE_CENTER_TIME[:-2]
-        d = datetime.strptime('%s%s' % (self.landsatDate,self.landsatTime),'%Y-%m-%d%H:%M:%S.%f')
+        d = meta.DATETIME_OBJ
         self.year = d.year
         self.month = d.month
         self.day = d.day
@@ -219,20 +218,26 @@ class Landsat:
         Folders = folders(base)    
         self.earthLoginUser = username
         self.earthLoginPass = password
-        self.landsatLST = Folders['landsatLST']
-        self.landsatSR = Folders['landsatSR']
-        self.landsatTemp = Folders['landsatTemp']
+        self.landsatLST = Folders['landsat_LST']
+        self.landsatSR = Folders['landsat_SR']
+        self.landsatTemp = Folders['landsat_Temp']
         self.asterEmissivityBase= Folders['asterEmissivityBase']
         self.ASTERmosaicTemp = Folders['ASTERmosaicTemp']
         self.landsatDataBase = Folders['landsatDataBase']
         self.landsatEmissivityBase = Folders['landsatEmissivityBase']
-        self.sceneID = filepath.split(os.sep)[-1][:21]
-        self.scene = self.sceneID[3:9]
-        self.yeardoy = self.sceneID[9:16]
+#        self.sceneID = filepath.split(os.sep)[-1][:-8]
+#        self.scene = self.sceneID[3:9]
+#        self.yeardoy = self.sceneID[9:16]
         
-        meta = landsat_metadata(os.path.join(self.landsatSR, 
-                                                          self.scene,'%s_MTL.txt' % self.sceneID))
-        self.ls = GeoTIFF(os.path.join(self.landsatSR, self.scene,'%s_sr_band1.tif' % self.sceneID))
+#        meta = landsat_metadata(os.path.join(self.landsatSR, 
+#                                                          self.scene,'%s_MTL.txt' % self.sceneID))
+        meta = landsat_metadata(filepath)
+#        self.productID = meta.LANDSAT_PRODUCT_ID
+        self.productID = filepath.split(os.sep)[-1][:-8]
+        self.sceneID = meta.LANDSAT_SCENE_ID
+#        self.scene = self.productID.split('_')[2]
+        self.scene = self.sceneID[3:9]
+        self.ls = GeoTIFF(os.path.join(self.landsatSR, self.scene,'%s_sr_band1.tif' % self.productID))
         self.proj4 = self.ls.proj4
         self.inProj4 = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
         self.ulx = meta.CORNER_UL_PROJECTION_X_PRODUCT
@@ -270,7 +275,7 @@ class Landsat:
                 asterFN = 'AG100.v003.%s.%s.0001.h5' % (latString,lonString)
                 # ASTER Emissivity product AG100 comes in 1 x 1 degree tiles where UL is given in the filename.
                 ASTERurl = os.path.join(ASTERurlBase,asterFN)
-                print ASTERurl
+                #print ASTERurl
                 localAsterFN = os.path.join(self.asterEmissivityBase,asterFN)
                 
                 if not os.path.isfile(localAsterFN):
@@ -307,7 +312,7 @@ class Landsat:
     def processLandsatLST(self,tirsRttov,merraDict):
         
         # Landsat brightness temperature
-        landsat = os.path.join(self.landsatTemp,"%s_bt_band10.tif" % self.sceneID)
+        landsat = os.path.join(self.landsatTemp,"%s_bt_band10.tif" % self.productID)
         Lg = gdal.Open(landsat)
         BT= Lg.ReadAsArray()/10.
         #=====get radiance from BT=========
@@ -397,15 +402,10 @@ class Landsat:
 
         LST = np.array(self.Kappa2*(1/np.log(self.Kappa1/surfRad)), dtype='float32')
 
-#        lstFolder = os.path.join(self.landsatTemp,self.scene)
-#        if not os.path.exists(lstFolder):
-#            os.makedirs(lstFolder)
         
         lstName = os.path.join(self.landsatTemp,'%s_lst.tiff'% self.sceneID)
         #write LST to a geoTiff
         self.ls.clone(lstName ,LST)
 
-
-        #writeImageData(LST,geo,proj,LST.shape,'GTiff',lstName,gdal.GDT_Float32)
         
-        print 'done processing LST'
+        print('done processing LST')

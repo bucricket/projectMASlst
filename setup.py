@@ -2,8 +2,7 @@
 
 from __future__ import print_function
 import subprocess
-import os, stat
-import shutil
+import os
 
 # set project base directory structure
 base = os.getcwd()
@@ -27,14 +26,38 @@ prefix  = os.environ.get('PREFIX')
 processDi = os.path.abspath(os.path.join(prefix,os.pardir))
 processDir = os.path.join(processDi,'work')
 srcDir = os.path.join(processDir,'source')
+libEnv = os.path.join(prefix,'lib')
+libDir = os.path.join(processDir,'source','lib')
 
-shutil.copyfile(os.path.join(srcDir,'prepareDMS3_sa.csh'),os.path.join(prefix,'bin','prepareDMS3_sa.csh'))
-shutil.copyfile(os.path.join(srcDir,'lndlst_dms3_sa.csh'),os.path.join(prefix,'bin','lndlst_dms3_sa.csh'))
-os.chmod(os.path.join(prefix,'bin','prepareDMS3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
-os.chmod(os.path.join(prefix,'bin','lndlst_dms3_sa.csh'), stat.S_IREAD | stat.S_IEXEC)
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libtiff.a'), 
+"%s" % os.path.join(libDir,'libtiff.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'liblzma.a'), 
+"%s" % os.path.join(libDir,'liblzma.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libjpeg.a'), 
+"%s" % os.path.join(libDir,'libjpeg.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libgeotiff.a'), 
+"%s" % os.path.join(libDir,'libgeotiff.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libsz.a'), 
+"%s" % os.path.join(libDir,'libsz.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libGctp.a'), 
+"%s" % os.path.join(libDir,'libGctp.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libdf.a'), 
+"%s" % os.path.join(libDir,'libdf.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libz.a'), 
+"%s" % os.path.join(libDir,'libz.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libmfhdf.a'), 
+"%s" % os.path.join(libDir,'libmfhdf.a')])
+subprocess.call(["ln","-s", "%s" % os.path.join(libEnv,'libhdfeos.a'), 
+"%s" % os.path.join(libDir,'libhdfeos.a')])
+
+print ("installing Landsat_DMS...")
+mkPath = os.path.join(processDir,'source','Landsat_DMS')
+os.chdir(mkPath)
+subprocess.call(["scons","-Q","--prefix=%s" % prefix,"install"])
+subprocess.call(["scons","-c"])
+os.chdir(base)
+
 #=============setup the python scripts============================
-
-
 
 setup(
     name="projectmaslst",
@@ -43,7 +66,10 @@ setup(
     author="Mitchell Schull",
     author_email="mitch.schull@noaa.gov",
     url="https://github.com/bucricket/projectMASlst.git",
-    packages= ['processlst'],
+#    packages= ['processlst'],
+    py_modules=['processlst.processlst','processlst.utils',
+                'processlst.lndlst_dms','processlst.landsatTools',
+                'processlst.processData'],
     platforms='Posix; MacOS X; Windows',
     license='BSD 3-Clause',
     classifiers=[
@@ -58,4 +84,3 @@ setup(
     ],  
     **setup_kwargs
 )
-
